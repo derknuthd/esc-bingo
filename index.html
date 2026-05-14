@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ESC Bingo</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Phase 1: Start -->
+  <section id="phase-1" class="phase phase--active" aria-hidden="false">
+    <div class="phase__inner phase__inner--center">
+      <h1 class="headline">Dein ESC Bingo</h1>
+      <p class="subline">Perfekte Vorbereitung für den Eurovision Song Contest — erstell individuelle Bingo-Karten für alle.</p>
+      <button id="btn-start" class="btn btn--primary btn--large">Bingo-Karte erstellen</button>
+    </div>
+  </section>
+
+  <!-- Phase 2: Konfigurieren -->
+  <section id="phase-2" class="phase" aria-hidden="true">
+    <div class="phase__inner">
+
+      <header class="config-header">
+        <button id="btn-back" type="button" class="link link--back">← Zurück</button>
+        <h2 class="config-title">Karte konfigurieren</h2>
+      </header>
+
+      <!-- Pool status -->
+      <div id="pool-status" class="pool-status">
+        <span id="pool-count" class="pool-count"></span>
+        <span id="pool-hint" class="pool-hint" hidden></span>
+      </div>
+
+      <!-- Collapsible: Felder anpassen -->
+      <details id="field-details" class="field-details">
+        <summary class="field-details__toggle">
+          <span>Felder anpassen</span>
+          <span class="field-details__arrow" aria-hidden="true">›</span>
+        </summary>
+        <div class="field-details__body">
+          <div class="preset-controls">
+            <button id="btn-select-all" type="button" class="btn btn--ghost btn--sm">Alle auswählen</button>
+            <button id="btn-deselect-all" type="button" class="btn btn--ghost btn--sm">Keine</button>
+          </div>
+          <div id="preset-tags" class="tag-cloud" role="group" aria-label="Preset-Felder"></div>
+
+          <div class="section-label">Eigene Felder</div>
+          <div class="custom-input-row">
+            <input
+              id="custom-input"
+              type="text"
+              class="input"
+              placeholder="Eigenes Feld eingeben…"
+              maxlength="60"
+              aria-label="Eigenes Feld eingeben"
+            />
+            <button id="btn-add-custom" type="button" class="btn btn--secondary btn--sm">Hinzufügen</button>
+          </div>
+          <div id="custom-chips" class="chip-list" aria-label="Eigene Felder" role="list"></div>
+        </div>
+      </details>
+
+      <!-- Options -->
+      <div class="options-grid">
+        <label class="option-row">
+          <input type="checkbox" id="opt-free-field" class="option-checkbox" checked />
+          <span class="option-label">⭐ Freifeld in der Mitte</span>
+        </label>
+
+        <div class="option-field">
+          <label class="option-label-text" for="card-name">Name auf der Karte <span class="optional">(optional)</span></label>
+          <input
+            id="card-name"
+            type="text"
+            class="input input--inline"
+            placeholder="z.B. Max"
+            maxlength="40"
+          />
+        </div>
+
+        <div class="option-field">
+          <label class="option-label-text" for="card-count">Anzahl Karten</label>
+          <input
+            id="card-count"
+            type="number"
+            class="input input--count"
+            min="1"
+            max="20"
+            value="1"
+          />
+        </div>
+      </div>
+
+      <div class="config-footer">
+        <button id="btn-generate" class="btn btn--primary btn--large">Karten generieren</button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Phase 3: Karte anzeigen -->
+  <section id="phase-3" class="phase" aria-hidden="true">
+    <div class="phase__inner">
+
+      <div class="card-actions card-actions--top">
+        <button id="btn-print" class="btn btn--primary">Drucken / Als PDF speichern</button>
+        <button id="btn-new-card" class="btn btn--secondary">Weitere Karte</button>
+        <button id="btn-edit-fields" class="btn btn--ghost">Einstellungen</button>
+      </div>
+
+      <div id="card-container"></div>
+
+    </div>
+  </section>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
