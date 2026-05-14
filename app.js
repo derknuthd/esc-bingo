@@ -5,9 +5,12 @@ const GRID_SIZE = 25;
 const FREE_FIELD_INDEX = 12;
 const FREE_FIELD_LABEL = '⭐';
 
-// --- State ---
-let pool = [];
-let activePresets = new Set();
+// --- State (pool starts full) ---
+let pool = [...ESC_PRESETS];
+let activePresets = new Set(ESC_PRESETS);
+let customFields = [];
+let cardCount = 1;
+let freeFieldEnabled = true;
 
 // --- Fisher-Yates shuffle ---
 function shuffle(arr) {
@@ -20,10 +23,12 @@ function shuffle(arr) {
 }
 
 function generateCard() {
-  const items = shuffle(pool).slice(0, MIN_POOL_SIZE);
-  const fields = [...items];
-  fields.splice(FREE_FIELD_INDEX, 0, FREE_FIELD_LABEL);
-  return fields;
+  const needed = freeFieldEnabled ? MIN_POOL_SIZE : GRID_SIZE;
+  const items = shuffle(pool).slice(0, needed);
+  if (freeFieldEnabled) {
+    items.splice(FREE_FIELD_INDEX, 0, FREE_FIELD_LABEL);
+  }
+  return items;
 }
 
 // --- DOM refs ---
@@ -37,16 +42,21 @@ const btnGenerate = document.getElementById('btn-generate');
 const btnNewCard = document.getElementById('btn-new-card');
 const btnPrint = document.getElementById('btn-print');
 const btnEditFields = document.getElementById('btn-edit-fields');
+const btnSelectAll = document.getElementById('btn-select-all');
+const btnDeselectAll = document.getElementById('btn-deselect-all');
+const btnAddCustom = document.getElementById('btn-add-custom');
 
 const presetContainer = document.getElementById('preset-tags');
 const customInput = document.getElementById('custom-input');
-const btnAddCustom = document.getElementById('btn-add-custom');
-const poolCounter = document.getElementById('pool-counter');
+const customChips = document.getElementById('custom-chips');
+const poolCount = document.getElementById('pool-count');
+const poolHint = document.getElementById('pool-hint');
 const validationMsg = document.getElementById('validation-msg');
-const activeChips = document.getElementById('active-chips');
 
 const cardContainer = document.getElementById('card-container');
-const cardName = document.getElementById('card-name');
+const cardNameInput = document.getElementById('card-name');
+const cardCountInput = document.getElementById('card-count');
+const optFreeField = document.getElementById('opt-free-field');
 
 // --- Phase transitions ---
 function showPhase(id) {
@@ -59,28 +69,26 @@ function showPhase(id) {
   target.setAttribute('aria-hidden', 'false');
 }
 
-// --- Pool & counter ---
-function updateCounter() {
+// --- Pool status ---
+function rebuildPool() {
+  pool = [...activePresets, ...customFields];
+}
+
+function updateStatus() {
   const n = pool.length;
-  poolCounter.textContent = `${n} von mindestens ${MIN_POOL_SIZE} Feldern gewählt`;
-  poolCounter.classList.toggle('counter--ready', n >= MIN_POOL_SIZE);
-  btnGenerate.disabled = n < MIN_POOL_SIZE;
-}
+  const enough = n >= MIN_POOL_SIZE;
+  poolCount.textContent = `${n} Felder im Pool`;
+  poolCount.classList.toggle('pool-count--ready', enough);
+  poolCount.classList.toggle('pool-count--warn', !enough);
 
-function addToPool(text) {
-  const value = text.trim();
-  if (!value || pool.includes(value)) return;
-  pool.push(value);
-  renderActiveChip(value);
-  updateCounter();
-}
+  if (!enough) {
+    poolHint.textContent = `Mindestens ${MIN_POOL_SIZE} nötig — noch ${MIN_POOL_SIZE - n} fehlen`;
+    poolHint.hidden = false;
+  } else {
+    poolHint.hidden = true;
+  }
 
-function removeFromPool(value) {
-  pool = pool.filter(v => v !== value);
-  activePresets.delete(value);
-  updatePresetTags();
-  renderAllChips();
-  updateCounter();
+  btnGenerate.disabled = !enough;
 }
 
 // --- Preset tags ---
@@ -89,39 +97,69 @@ function renderPresetTags() {
   ESC_PRESETS.forEach(preset => {
     const btn = document.createElement('button');
     btn.type = 'button';
-    btn.className = 'tag';
+    btn.className = 'tag tag--active';
     btn.textContent = preset;
-    btn.setAttribute('aria-pressed', 'false');
+    btn.setAttribute('aria-pressed', 'true');
     btn.addEventListener('click', () => togglePreset(preset, btn));
     presetContainer.appendChild(btn);
-  });
-}
-
-function updatePresetTags() {
-  presetContainer.querySelectorAll('.tag').forEach(btn => {
-    const active = activePresets.has(btn.textContent);
-    btn.classList.toggle('tag--active', active);
-    btn.setAttribute('aria-pressed', String(active));
   });
 }
 
 function togglePreset(preset, btn) {
   if (activePresets.has(preset)) {
     activePresets.delete(preset);
-    removeFromPool(preset);
+    btn.classList.remove('tag--active');
+    btn.setAttribute('aria-pressed', 'false');
   } else {
     activePresets.add(preset);
-    addToPool(preset);
     btn.classList.add('tag--active');
     btn.setAttribute('aria-pressed', 'true');
   }
+  rebuildPool();
+  updateStatus();
 }
 
-// --- Active chips ---
-function renderActiveChip(value) {
+function selectAllPresets() {
+  activePresets = new Set(ESC_PRESETS);
+  presetContainer.querySelectorAll('.tag').forEach(btn => {
+    btn.classList.add('tag--active');
+    btn.setAttribute('aria-pressed', 'true');
+  });
+  rebuildPool();
+  updateStatus();
+}
+
+function deselectAllPresets() {
+  activePresets.clear();
+  presetContainer.querySelectorAll('.tag').forEach(btn => {
+    btn.classList.remove('tag--active');
+    btn.setAttribute('aria-pressed', 'false');
+  });
+  rebuildPool();
+  updateStatus();
+}
+
+// --- Custom fields ---
+function addCustomField(text) {
+  const value = text.trim();
+  if (!value || pool.includes(value)) return false;
+  customFields.push(value);
+  rebuildPool();
+  updateStatus();
+  renderCustomChip(value);
+  return true;
+}
+
+function removeCustomField(value) {
+  customFields = customFields.filter(v => v !== value);
+  rebuildPool();
+  updateStatus();
+  renderAllCustomChips();
+}
+
+function renderCustomChip(value) {
   const chip = document.createElement('span');
   chip.className = 'chip';
-  chip.dataset.value = value;
 
   const label = document.createElement('span');
   label.textContent = value;
@@ -131,23 +169,82 @@ function renderActiveChip(value) {
   remove.className = 'chip__remove';
   remove.setAttribute('aria-label', `${value} entfernen`);
   remove.textContent = '×';
-  remove.addEventListener('click', () => removeFromPool(value));
+  remove.addEventListener('click', () => removeCustomField(value));
 
   chip.appendChild(label);
   chip.appendChild(remove);
-  activeChips.appendChild(chip);
+  customChips.appendChild(chip);
 }
 
-function renderAllChips() {
-  activeChips.innerHTML = '';
-  pool.forEach(renderActiveChip);
+function renderAllCustomChips() {
+  customChips.innerHTML = '';
+  customFields.forEach(renderCustomChip);
 }
 
 // --- Card rendering ---
-function renderCard(fields, name) {
-  const existing = cardContainer.querySelector('.bingo-card');
-  if (existing) existing.remove();
+function renderCards(cards, name) {
+  cardContainer.innerHTML = '';
+  cards.forEach(fields => {
+    const card = document.createElement('div');
+    card.className = 'bingo-card';
 
+    if (name) {
+      const nameEl = document.createElement('div');
+      nameEl.className = 'bingo-card__name';
+      nameEl.textContent = name;
+      card.appendChild(nameEl);
+    }
+
+    const grid = document.createElement('div');
+    grid.className = 'bingo-grid';
+
+    fields.forEach((text, i) => {
+      const cell = document.createElement('div');
+      cell.className = 'bingo-cell';
+      if (freeFieldEnabled && i === FREE_FIELD_INDEX) {
+        cell.classList.add('bingo-cell--free');
+      }
+      cell.textContent = text;
+      grid.appendChild(cell);
+    });
+
+    card.appendChild(grid);
+    cardContainer.appendChild(card);
+  });
+}
+
+// --- Event listeners ---
+btnStart.addEventListener('click', () => {
+  renderPresetTags();
+  updateStatus();
+  showPhase('phase-2');
+});
+
+btnBack.addEventListener('click', () => showPhase('phase-1'));
+
+btnSelectAll.addEventListener('click', selectAllPresets);
+btnDeselectAll.addEventListener('click', deselectAllPresets);
+
+btnGenerate.addEventListener('click', () => {
+  if (pool.length < MIN_POOL_SIZE) {
+    validationMsg.textContent = `Zu wenig Felder — bitte mindestens ${MIN_POOL_SIZE} auswählen.`;
+    validationMsg.hidden = false;
+    return;
+  }
+  validationMsg.hidden = true;
+
+  freeFieldEnabled = optFreeField.checked;
+  cardCount = Math.max(1, Math.min(20, parseInt(cardCountInput.value, 10) || 1));
+  const name = cardNameInput.value.trim();
+
+  const cards = Array.from({ length: cardCount }, () => generateCard());
+  renderCards(cards, name);
+  showPhase('phase-3');
+});
+
+btnNewCard.addEventListener('click', () => {
+  const name = cardNameInput.value.trim();
+  const newCard = generateCard();
   const card = document.createElement('div');
   card.className = 'bingo-card';
 
@@ -160,62 +257,42 @@ function renderCard(fields, name) {
 
   const grid = document.createElement('div');
   grid.className = 'bingo-grid';
-
-  fields.forEach((text, i) => {
+  newCard.forEach((text, i) => {
     const cell = document.createElement('div');
     cell.className = 'bingo-cell';
-    if (i === FREE_FIELD_INDEX) cell.classList.add('bingo-cell--free');
+    if (freeFieldEnabled && i === FREE_FIELD_INDEX) cell.classList.add('bingo-cell--free');
     cell.textContent = text;
     grid.appendChild(cell);
   });
-
   card.appendChild(grid);
-  cardContainer.prepend(card);
-}
-
-// --- Event listeners ---
-btnStart.addEventListener('click', () => {
-  renderPresetTags();
-  updateCounter();
-  showPhase('phase-2');
-});
-
-btnBack.addEventListener('click', () => showPhase('phase-1'));
-
-btnGenerate.addEventListener('click', () => {
-  if (pool.length < MIN_POOL_SIZE) {
-    validationMsg.textContent = `Zu wenig Felder gewählt – bitte mindestens ${MIN_POOL_SIZE} auswählen.`;
-    validationMsg.hidden = false;
-    return;
-  }
-  validationMsg.hidden = true;
-  const fields = generateCard();
-  renderCard(fields, cardName.value.trim());
-  showPhase('phase-3');
-});
-
-btnNewCard.addEventListener('click', () => {
-  const fields = generateCard();
-  renderCard(fields, cardName.value.trim());
+  cardContainer.appendChild(card);
 });
 
 btnPrint.addEventListener('click', () => window.print());
 
 btnEditFields.addEventListener('click', () => {
+  updateStatus();
   showPhase('phase-2');
-  updateCounter();
 });
 
 btnAddCustom.addEventListener('click', () => {
-  addToPool(customInput.value);
-  customInput.value = '';
+  if (addCustomField(customInput.value)) {
+    customInput.value = '';
+  }
   customInput.focus();
 });
 
 customInput.addEventListener('keydown', e => {
   if (e.key === 'Enter') {
     e.preventDefault();
-    addToPool(customInput.value);
-    customInput.value = '';
+    if (addCustomField(customInput.value)) {
+      customInput.value = '';
+    }
   }
+});
+
+cardCountInput.addEventListener('change', () => {
+  const v = parseInt(cardCountInput.value, 10);
+  if (isNaN(v) || v < 1) cardCountInput.value = 1;
+  if (v > 20) cardCountInput.value = 20;
 });
