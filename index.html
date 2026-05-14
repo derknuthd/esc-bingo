@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ESC Bingo</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Phase 1: Start -->
+  <section id="phase-1" class="phase phase--active" aria-hidden="false">
+    <div class="phase__inner phase__inner--center">
+      <h1 class="headline">Dein ESC Bingo</h1>
+      <p class="subline">Wähle deine Felder, generiere eine Karte und spiel beim Eurovision Song Contest mit.</p>
+      <button id="btn-start" class="btn btn--primary btn--large">Bingo-Karte erstellen</button>
+    </div>
+  </section>
+
+  <!-- Phase 2: Konfigurieren -->
+  <section id="phase-2" class="phase" aria-hidden="true">
+    <div class="phase__inner">
+      <header class="config-header">
+        <h2 class="config-title">Felder wählen</h2>
+        <a id="btn-back" class="link link--back" role="button" tabindex="0">← Zurück</a>
+      </header>
+
+      <p id="pool-counter" class="counter">0 von mindestens 24 Feldern gewählt</p>
+      <p id="validation-msg" class="validation-msg" hidden aria-live="polite"></p>
+
+      <div class="section-label">Vorschläge</div>
+      <div id="preset-tags" class="tag-cloud" role="group" aria-label="Preset-Felder"></div>
+
+      <div class="section-label">Eigene Felder</div>
+      <div class="custom-input-row">
+        <input
+          id="custom-input"
+          type="text"
+          class="input"
+          placeholder="Eigenes Feld eingeben…"
+          maxlength="60"
+          aria-label="Eigenes Feld eingeben"
+        />
+        <button id="btn-add-custom" type="button" class="btn btn--secondary">Hinzufügen</button>
+      </div>
+
+      <div id="active-chips" class="chip-list" aria-label="Ausgewählte Felder" role="list"></div>
+
+      <div class="config-footer">
+        <label class="name-label" for="card-name">Name auf der Karte (optional)</label>
+        <input
+          id="card-name"
+          type="text"
+          class="input input--name"
+          placeholder="z.B. Max"
+          maxlength="40"
+          aria-label="Name auf der Karte"
+        />
+        <button id="btn-generate" class="btn btn--primary" disabled>Karte generieren</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Phase 3: Karte anzeigen -->
+  <section id="phase-3" class="phase" aria-hidden="true">
+    <div class="phase__inner">
+      <div class="card-actions card-actions--top">
+        <button id="btn-print" class="btn btn--primary">Drucken / Als PDF speichern</button>
+      </div>
+
+      <div id="card-container"></div>
+
+      <div class="card-actions card-actions--bottom">
+        <button id="btn-new-card" class="btn btn--secondary">Weitere Karte</button>
+        <button id="btn-edit-fields" class="btn btn--ghost">Felder bearbeiten</button>
+      </div>
+    </div>
+  </section>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
