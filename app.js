@@ -51,8 +51,6 @@ const customInput = document.getElementById('custom-input');
 const customChips = document.getElementById('custom-chips');
 const poolCount = document.getElementById('pool-count');
 const poolHint = document.getElementById('pool-hint');
-const validationMsg = document.getElementById('validation-msg');
-
 const cardContainer = document.getElementById('card-container');
 const cardNameInput = document.getElementById('card-name');
 const cardCountInput = document.getElementById('card-count');
@@ -97,9 +95,10 @@ function renderPresetTags() {
   ESC_PRESETS.forEach(preset => {
     const btn = document.createElement('button');
     btn.type = 'button';
-    btn.className = 'tag tag--active';
+    const isActive = activePresets.has(preset);
+    btn.className = isActive ? 'tag tag--active' : 'tag';
     btn.textContent = preset;
-    btn.setAttribute('aria-pressed', 'true');
+    btn.setAttribute('aria-pressed', String(isActive));
     btn.addEventListener('click', () => togglePreset(preset, btn));
     presetContainer.appendChild(btn);
   });
@@ -226,13 +225,6 @@ btnSelectAll.addEventListener('click', selectAllPresets);
 btnDeselectAll.addEventListener('click', deselectAllPresets);
 
 btnGenerate.addEventListener('click', () => {
-  if (pool.length < MIN_POOL_SIZE) {
-    validationMsg.textContent = `Zu wenig Felder — bitte mindestens ${MIN_POOL_SIZE} auswählen.`;
-    validationMsg.hidden = false;
-    return;
-  }
-  validationMsg.hidden = true;
-
   freeFieldEnabled = optFreeField.checked;
   cardCount = Math.max(1, Math.min(20, parseInt(cardCountInput.value, 10) || 1));
   const name = cardNameInput.value.trim();
