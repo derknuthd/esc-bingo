@@ -7,6 +7,8 @@ let activePresets = new Set(ESC_PRESETS);
 let customFields = [];
 let cardCount = 1;
 let freeFieldEnabled = true;
+let cards = [];
+let activeCardIndex = 0;
 
 // --- DOM refs ---
 const phase1 = document.getElementById('phase-1');
@@ -18,6 +20,9 @@ const btnBack      = document.getElementById('btn-back');
 const btnGenerate  = document.getElementById('btn-generate');
 const btnNewCard   = document.getElementById('btn-new-card');
 const btnPrint     = document.getElementById('btn-print');
+const btnPrev      = document.getElementById('btn-prev');
+const btnNext      = document.getElementById('btn-next');
+const cardNavCounter = document.getElementById('card-nav-counter');
 
 const btnDecrement    = document.getElementById('btn-decrement');
 const btnIncrement    = document.getElementById('btn-increment');
@@ -160,9 +165,21 @@ function buildCard(fields) {
   return card;
 }
 
-function renderCards(cards) {
+function showCard(index) {
+  activeCardIndex = index;
+  cardContainer.querySelectorAll('.bingo-card').forEach((el, i) => {
+    el.classList.toggle('bingo-card--active', i === index);
+  });
+  cardNavCounter.textContent = `Karte ${index + 1} von ${cards.length}`;
+  btnPrev.disabled = index === 0;
+  btnNext.disabled = index === cards.length - 1;
+}
+
+function renderCards(newCards) {
+  cards = newCards;
   cardContainer.innerHTML = '';
   cards.forEach(fields => cardContainer.appendChild(buildCard(fields)));
+  showCard(0);
 }
 
 // --- Event listeners ---
@@ -187,16 +204,28 @@ btnIncrement.addEventListener('click', () => {
 
 btnGenerate.addEventListener('click', () => {
   freeFieldEnabled = optFreeField.checked;
-  const cards = Array.from({ length: cardCount }, () => generateCard(pool, freeFieldEnabled));
-  renderCards(cards);
+  renderCards(Array.from({ length: cardCount }, () => generateCard(pool, freeFieldEnabled)));
   showPhase('phase-3');
 });
 
 btnNewCard.addEventListener('click', () => {
-  cardContainer.appendChild(buildCard(generateCard(pool, freeFieldEnabled)));
+  cards.push(generateCard(pool, freeFieldEnabled));
+  cardContainer.appendChild(buildCard(cards[cards.length - 1]));
+  showCard(cards.length - 1);
 });
 
+btnPrev.addEventListener('click', () => showCard(activeCardIndex - 1));
+btnNext.addEventListener('click', () => showCard(activeCardIndex + 1));
+
 btnPrint.addEventListener('click', () => window.print());
+
+// Swipe support
+let touchStartX = 0;
+cardContainer.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
+cardContainer.addEventListener('touchend', e => {
+  const delta = e.changedTouches[0].clientX - touchStartX;
+  if (Math.abs(delta) > 50) showCard(Math.max(0, Math.min(cards.length - 1, activeCardIndex + (delta < 0 ? 1 : -1))));
+}, { passive: true });
 
 btnSelectAll.addEventListener('click', selectAllPresets);
 btnDeselectAll.addEventListener('click', deselectAllPresets);
