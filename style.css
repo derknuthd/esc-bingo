@@ -9,8 +9,8 @@
   --color-magenta: #e0359a;
   --color-blue: #4060e0;
   --color-border: #3a3a6a;
-  --color-valid: #40c060;
   --color-error: #e05050;
+  --color-on-primary: #fff;
   --color-free-bg: color-mix(in srgb, var(--color-gold) 25%, transparent);
 
   --radius-sm: 6px;
@@ -130,7 +130,7 @@ body {
 
 .btn--primary {
   background: linear-gradient(135deg, var(--color-magenta), var(--color-blue));
-  color: #fff;
+  color: var(--color-on-primary);
 }
 .btn--primary:not(:disabled):hover { opacity: 0.88; }
 
