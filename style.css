@@ -11,6 +11,7 @@
   --color-border: #3a3a6a;
   --color-valid: #40c060;
   --color-error: #e05050;
+  --color-free-bg: color-mix(in srgb, var(--color-gold) 25%, transparent);
 
   --radius-sm: 6px;
   --radius-md: 12px;
@@ -48,17 +49,20 @@ body {
 }
 
 /* ===== Phase System ===== */
-.phase {
-  display: none;
-  opacity: 0;
-  transform: translateY(12px);
-  transition: opacity var(--transition-phase), transform var(--transition-phase);
-}
+.phase { display: none; }
 
 .phase--active {
   display: block;
   opacity: 1;
   transform: translateY(0);
+  transition: opacity var(--transition-phase), transform var(--transition-phase);
+}
+
+@starting-style {
+  .phase--active {
+    opacity: 0;
+    transform: translateY(12px);
+  }
 }
 
 .phase__inner {
@@ -461,7 +465,7 @@ details[open] .field-details__arrow { transform: rotate(90deg); }
 }
 
 .bingo-cell--free {
-  background: color-mix(in srgb, var(--color-gold) 25%, transparent);
+  background: var(--color-free-bg);
   font-size: 1.6rem;
 }
 
@@ -473,13 +477,14 @@ details[open] .field-details__arrow { transform: rotate(90deg); }
     --color-surface-2: #f0f0f0;
     --color-text: #000;
     --color-text-muted: #555;
-    --color-border: #bbb;
+    --color-border: #999;
     --color-gold: #d4a800;
     --color-magenta: #000;
     --color-blue: #000;
+    --color-free-bg: #f5e080;
   }
 
-  body { background: #fff; color: #000; }
+  body { background: var(--color-bg); color: var(--color-text); }
 
   .phase { display: none !important; }
   #phase-3 {
@@ -493,7 +498,7 @@ details[open] .field-details__arrow { transform: rotate(90deg); }
   .bingo-card {
     page-break-after: always;
     break-after: page;
-    border: 2px solid #000;
+    border: 2px solid var(--color-text);
     border-radius: 0;
     width: 100%;
     min-height: 100vh;
@@ -505,19 +510,19 @@ details[open] .field-details__arrow { transform: rotate(90deg); }
   .bingo-grid { flex: 1; }
 
   .bingo-cell {
-    border: 1px solid #999;
+    border: 1px solid var(--color-border);
     font-size: 9pt;
   }
 
   .bingo-cell--free {
-    background: #f5e080 !important;
+    background: var(--color-free-bg) !important;
     font-size: 16pt;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
 
   .bingo-card__name {
-    color: #000;
-    border-block-end: 1px solid #bbb;
+    color: var(--color-text);
+    border-block-end: 1px solid var(--color-border);
   }
 }
