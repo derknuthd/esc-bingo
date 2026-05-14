@@ -16,23 +16,86 @@
     </div>
   </section>
 
-  <!-- Phase 2: Konfigurieren (minimal) -->
+  <!-- Phase 2: Konfigurieren -->
   <section id="phase-2" class="phase" aria-hidden="true">
-    <div class="phase__inner phase__inner--center">
+    <div class="phase__inner phase__inner--config">
+
       <button id="btn-back" type="button" class="btn--back">← Zurück</button>
 
-      <div class="count-section">
+      <!-- Minimal hero: immer sichtbar -->
+      <div class="count-hero">
         <p class="count-label">Wie viele Karten?</p>
         <div class="stepper" role="group" aria-label="Anzahl Karten">
           <button id="btn-decrement" type="button" class="stepper__btn" aria-label="Weniger">−</button>
           <span id="card-count-display" class="stepper__value" aria-live="polite">1</span>
           <button id="btn-increment" type="button" class="stepper__btn" aria-label="Mehr">+</button>
         </div>
+        <button id="btn-generate" class="btn btn--primary btn--large">Karten generieren</button>
       </div>
 
-      <button id="btn-generate" class="btn btn--primary btn--large">Karten generieren</button>
+      <!-- Progressive disclosure: Felder anpassen -->
+      <details id="field-customizer" class="customizer">
+        <summary class="customizer__toggle">
+          <span>Felder anpassen</span>
+          <span class="customizer__arrow" aria-hidden="true">›</span>
+        </summary>
 
-      <button id="btn-open-drawer" type="button" class="btn--subtle">Felder anpassen ›</button>
+        <div class="customizer__body">
+
+          <!-- Ebene 1: Bestehende Klischees -->
+          <details class="customizer-section">
+            <summary class="customizer-section__toggle">
+              <span>Bestehende Klischees</span>
+              <span class="customizer__arrow" aria-hidden="true">›</span>
+            </summary>
+            <div class="customizer-section__body">
+              <div class="section-controls">
+                <button id="btn-select-all" type="button" class="btn btn--ghost btn--sm">Alle</button>
+                <button id="btn-deselect-all" type="button" class="btn btn--ghost btn--sm">Keine</button>
+              </div>
+              <div id="preset-tags" class="tag-cloud" role="group" aria-label="ESC-Klischees"></div>
+            </div>
+          </details>
+
+          <!-- Ebene 2: Eigene Felder -->
+          <details class="customizer-section">
+            <summary class="customizer-section__toggle">
+              <span>Eigene Felder hinzufügen</span>
+              <span class="customizer__arrow" aria-hidden="true">›</span>
+            </summary>
+            <div class="customizer-section__body">
+              <div class="custom-input-row">
+                <input
+                  id="custom-input"
+                  type="text"
+                  class="input"
+                  placeholder="Eigenes Feld eingeben…"
+                  maxlength="60"
+                  aria-label="Eigenes Feld eingeben"
+                />
+                <button id="btn-add-custom" type="button" class="btn btn--secondary btn--sm">+</button>
+              </div>
+              <div id="custom-chips" class="chip-list" aria-label="Eigene Felder" role="list"></div>
+            </div>
+          </details>
+
+          <!-- Ebene 3: Freifeld -->
+          <details class="customizer-section">
+            <summary class="customizer-section__toggle">
+              <span>Freifeld ⭐</span>
+              <span class="customizer__arrow" aria-hidden="true">›</span>
+            </summary>
+            <div class="customizer-section__body">
+              <label class="option-row">
+                <input type="checkbox" id="opt-free-field" class="option-checkbox" checked />
+                <span class="option-label">Freifeld in der Mitte aktivieren</span>
+              </label>
+            </div>
+          </details>
+
+        </div>
+      </details>
+
     </div>
   </section>
 
@@ -46,52 +109,6 @@
       <div id="card-container"></div>
     </div>
   </section>
-
-  <!-- Drawer: Felder anpassen -->
-  <dialog id="field-drawer" aria-label="Felder anpassen">
-    <div class="drawer">
-      <header class="drawer__header">
-        <h2 class="drawer__title">Felder anpassen</h2>
-        <button id="btn-close-drawer" type="button" class="drawer__close" aria-label="Schließen">✕</button>
-      </header>
-
-      <div class="drawer__body">
-        <div class="drawer-section">
-          <div class="drawer-section__label">Klischees auf der Karte</div>
-          <div class="drawer-section__controls">
-            <button id="btn-select-all" type="button" class="btn btn--ghost btn--sm">Alle</button>
-            <button id="btn-deselect-all" type="button" class="btn btn--ghost btn--sm">Keine</button>
-          </div>
-          <div id="preset-tags" class="tag-cloud" role="group" aria-label="ESC-Klischees"></div>
-        </div>
-
-        <div class="drawer-section">
-          <div class="drawer-section__label">Eigene Felder</div>
-          <div class="custom-input-row">
-            <input
-              id="custom-input"
-              type="text"
-              class="input"
-              placeholder="Eigenes Feld eingeben…"
-              maxlength="60"
-              aria-label="Eigenes Feld eingeben"
-            />
-            <button id="btn-add-custom" type="button" class="btn btn--secondary btn--sm">+</button>
-          </div>
-          <div id="custom-chips" class="chip-list" aria-label="Eigene Felder" role="list"></div>
-        </div>
-
-        <label class="option-row drawer-section">
-          <input type="checkbox" id="opt-free-field" class="option-checkbox" checked />
-          <span class="option-label">⭐ Freifeld in der Mitte</span>
-        </label>
-      </div>
-
-      <footer class="drawer__footer">
-        <button id="btn-close-drawer-done" type="button" class="btn btn--primary btn--large">Fertig</button>
-      </footer>
-    </div>
-  </dialog>
 
   <script type="module" src="app.js"></script>
 </body>
