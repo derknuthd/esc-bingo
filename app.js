@@ -38,7 +38,6 @@ const btnBack      = document.getElementById('btn-back');
 const btnGenerate  = document.getElementById('btn-generate');
 const btnNewCard   = document.getElementById('btn-new-card');
 const btnPrint     = document.getElementById('btn-print');
-const btnEditFields = document.getElementById('btn-edit-fields');
 
 const btnDecrement = document.getElementById('btn-decrement');
 const btnIncrement = document.getElementById('btn-increment');
@@ -214,7 +213,6 @@ btnStart.addEventListener('click', () => {
 
 btnBack.addEventListener('click', () => showPhase('phase-1'));
 
-btnEditFields.addEventListener('click', () => showPhase('phase-2'));
 
 // Stepper
 btnDecrement.addEventListener('click', () => {
@@ -229,6 +227,7 @@ btnIncrement.addEventListener('click', () => {
 
 // Generate
 btnGenerate.addEventListener('click', () => {
+  if (drawer.open) drawer.close();
   freeFieldEnabled = optFreeField.checked;
   const cards = Array.from({ length: cardCount }, () => generateCard());
   renderCards(cards);
