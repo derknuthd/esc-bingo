@@ -26,11 +26,14 @@ esc-bingo/
 ├── README.md
 ├── .claude/
 │   ├── rules/
-│   │   ├── conventions.md  # CSS-, Git- und Code-Conventions
-│   │   ├── ux.md           # UX-Prinzipien & Progressive Disclosure
-│   │   └── spec.md         # Funktionale Anforderungen & Definition of Done
-│   └── commands/
-│       └── review.md       # /review-Command
+│   │   ├── conventions.md  # Projekt-spezifische Code-Conventions (Vanilla JS)
+│   │   ├── ux.md           # ESC-spezifische UX-Phasen & Design
+│   │   ├── spec.md         # Funktionale Anforderungen & Definition of Done
+│   │   └── workflow.md     # Entwicklungsserver-Setup
+│   ├── commands/
+│   │   └── review.md       # /review-Command
+│   └── skills/
+│       └── issue-refinement/SKILL.md  # Definition of Ready & Acceptance Criteria
 └── local/                  # Nicht committed – Testdateien, Scratch, PDFs
 ```
 
@@ -39,10 +42,6 @@ esc-bingo/
 @.claude/rules/conventions.md
 @.claude/rules/ux.md
 @.claude/rules/spec.md
-
-## Vor der Umsetzung
-
-**Erstelle zuerst einen Plan und warte auf Bestätigung, bevor du mit dem Coden anfängst.**
 
 ## Best Practices Referenz
 
