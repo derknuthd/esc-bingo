@@ -1,8 +1,5 @@
 import { ESC_PRESETS } from './presets.js';
-
-const MIN_POOL_SIZE = 24;
-const FREE_FIELD_INDEX = 12;
-const FREE_FIELD_LABEL = '⭐';
+import { MIN_POOL_SIZE, FREE_FIELD_INDEX, generateCard, isPoolValid } from './logic.js';
 
 // --- State ---
 let pool = [...ESC_PRESETS];
@@ -10,23 +7,6 @@ let activePresets = new Set(ESC_PRESETS);
 let customFields = [];
 let cardCount = 1;
 let freeFieldEnabled = true;
-
-// --- Fisher-Yates shuffle ---
-function shuffle(arr) {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
-
-function generateCard() {
-  const needed = freeFieldEnabled ? MIN_POOL_SIZE : 25;
-  const items = shuffle(pool).slice(0, needed);
-  if (freeFieldEnabled) items.splice(FREE_FIELD_INDEX, 0, FREE_FIELD_LABEL);
-  return items;
-}
 
 // --- DOM refs ---
 const phase1 = document.getElementById('phase-1');
@@ -73,6 +53,7 @@ function updateCountDisplay() {
 // --- Pool ---
 function rebuildPool() {
   pool = [...activePresets, ...customFields];
+  btnGenerate.disabled = !isPoolValid(pool);
 }
 
 // --- Preset tags ---
@@ -188,6 +169,7 @@ function renderCards(cards) {
 btnStart.addEventListener('click', () => {
   renderPresetTags();
   updateCountDisplay();
+  btnGenerate.disabled = !isPoolValid(pool);
   showPhase('phase-2');
 });
 
@@ -205,13 +187,13 @@ btnIncrement.addEventListener('click', () => {
 
 btnGenerate.addEventListener('click', () => {
   freeFieldEnabled = optFreeField.checked;
-  const cards = Array.from({ length: cardCount }, () => generateCard());
+  const cards = Array.from({ length: cardCount }, () => generateCard(pool, freeFieldEnabled));
   renderCards(cards);
   showPhase('phase-3');
 });
 
 btnNewCard.addEventListener('click', () => {
-  cardContainer.appendChild(buildCard(generateCard()));
+  cardContainer.appendChild(buildCard(generateCard(pool, freeFieldEnabled)));
 });
 
 btnPrint.addEventListener('click', () => window.print());
