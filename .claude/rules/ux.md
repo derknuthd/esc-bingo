@@ -26,15 +26,6 @@ Die App hat **drei Phasen**. Beim Laden ist ausschließlich Phase 1 sichtbar.
 
 **Übergänge:** CSS-Transition, Fade + leichtes Slide — nie abrupt.
 
-## Weitere Prinzipien
-
-- Kein Feature im primären Sichtbereich, das die meisten Nutzer nie brauchen
-- Power-Features sind auffindbar, aber nie aufdringlich
-- **Nutzersprache statt Technikbegriffe** – Konsequenz beschreiben, nicht Mechanismus:
-  - ✅ „Zu wenig Felder ausgewählt" — ❌ „Pool-Validierung fehlgeschlagen"
-  - ✅ „Wird gedruckt…" — ❌ „Rendere PDF…"
-  - Maßstab: Würde Apple das so formulieren?
-
 ## Design
 
 - Ästhetik: festlich, Eurovision-würdig, nicht kitschig — Confetti-Energie mit klarer Typografie
