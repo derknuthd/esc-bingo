@@ -39,23 +39,18 @@ const btnGenerate  = document.getElementById('btn-generate');
 const btnNewCard   = document.getElementById('btn-new-card');
 const btnPrint     = document.getElementById('btn-print');
 
-const btnDecrement = document.getElementById('btn-decrement');
-const btnIncrement = document.getElementById('btn-increment');
-const countDisplay = document.getElementById('card-count-display');
+const btnDecrement    = document.getElementById('btn-decrement');
+const btnIncrement    = document.getElementById('btn-increment');
+const countDisplay    = document.getElementById('card-count-display');
 
-const drawer           = document.getElementById('field-drawer');
-const btnOpenDrawer    = document.getElementById('btn-open-drawer');
-const btnCloseDrawer   = document.getElementById('btn-close-drawer');
-const btnCloseDrawerDone = document.getElementById('btn-close-drawer-done');
-
-const btnSelectAll   = document.getElementById('btn-select-all');
-const btnDeselectAll = document.getElementById('btn-deselect-all');
+const btnSelectAll    = document.getElementById('btn-select-all');
+const btnDeselectAll  = document.getElementById('btn-deselect-all');
 const presetContainer = document.getElementById('preset-tags');
-const customInput    = document.getElementById('custom-input');
-const btnAddCustom   = document.getElementById('btn-add-custom');
-const customChips    = document.getElementById('custom-chips');
-const optFreeField   = document.getElementById('opt-free-field');
-const cardContainer  = document.getElementById('card-container');
+const customInput     = document.getElementById('custom-input');
+const btnAddCustom    = document.getElementById('btn-add-custom');
+const customChips     = document.getElementById('custom-chips');
+const optFreeField    = document.getElementById('opt-free-field');
+const cardContainer   = document.getElementById('card-container');
 
 // --- Phase transitions ---
 function showPhase(id) {
@@ -73,19 +68,6 @@ function updateCountDisplay() {
   countDisplay.textContent = cardCount;
   btnDecrement.disabled = cardCount <= 1;
   btnIncrement.disabled = cardCount >= 20;
-}
-
-// --- Drawer ---
-function openDrawer() {
-  drawer.showModal();
-}
-
-function closeDrawer() {
-  drawer.classList.add('closing');
-  drawer.addEventListener('transitionend', () => {
-    drawer.classList.remove('closing');
-    drawer.close();
-  }, { once: true });
 }
 
 // --- Pool ---
@@ -203,8 +185,6 @@ function renderCards(cards) {
 }
 
 // --- Event listeners ---
-
-// Phase navigation
 btnStart.addEventListener('click', () => {
   renderPresetTags();
   updateCountDisplay();
@@ -213,8 +193,6 @@ btnStart.addEventListener('click', () => {
 
 btnBack.addEventListener('click', () => showPhase('phase-1'));
 
-
-// Stepper
 btnDecrement.addEventListener('click', () => {
   cardCount = Math.max(1, cardCount - 1);
   updateCountDisplay();
@@ -225,9 +203,7 @@ btnIncrement.addEventListener('click', () => {
   updateCountDisplay();
 });
 
-// Generate
 btnGenerate.addEventListener('click', () => {
-  if (drawer.open) drawer.close();
   freeFieldEnabled = optFreeField.checked;
   const cards = Array.from({ length: cardCount }, () => generateCard());
   renderCards(cards);
@@ -240,27 +216,9 @@ btnNewCard.addEventListener('click', () => {
 
 btnPrint.addEventListener('click', () => window.print());
 
-// Drawer
-btnOpenDrawer.addEventListener('click', openDrawer);
-btnCloseDrawer.addEventListener('click', closeDrawer);
-btnCloseDrawerDone.addEventListener('click', closeDrawer);
-
-// Close on backdrop click
-drawer.addEventListener('click', e => {
-  if (e.target === drawer) closeDrawer();
-});
-
-// Intercept native Escape to animate close
-drawer.addEventListener('cancel', e => {
-  e.preventDefault();
-  closeDrawer();
-});
-
-// Preset controls
 btnSelectAll.addEventListener('click', selectAllPresets);
 btnDeselectAll.addEventListener('click', deselectAllPresets);
 
-// Custom fields
 btnAddCustom.addEventListener('click', () => {
   if (addCustomField(customInput.value)) customInput.value = '';
   customInput.focus();
