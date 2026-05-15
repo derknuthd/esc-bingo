@@ -253,6 +253,7 @@ btnStart.disabled = true;
 async function loadPresets() {
   try {
     const res = await fetch('./presets.txt');
+    if (!res.ok) throw new Error(res.status);
     const text = await res.text();
     ESC_PRESETS = text.split('\n')
       .map(l => l.trim())
