@@ -1,3 +1,22 @@
+/* ===== Fonts ===== */
+@font-face {
+  font-family: 'Cherry Bomb One';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('./fonts/cherry-bomb-one-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'Cherry Bomb One';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('./fonts/cherry-bomb-one.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 /* ===== Custom Properties ===== */
 :root {
   --color-bg: #0d0d2b;
@@ -19,6 +38,7 @@
 
   --font-display: ui-rounded, "SF Pro Display", "Helvetica Neue", system-ui, sans-serif;
   --font-text: system-ui, -apple-system, sans-serif;
+  --font-bubble: 'Cherry Bomb One', ui-rounded, system-ui, sans-serif;
 
   --transition-phase: 0.35s ease;
 }
@@ -90,10 +110,10 @@ body {
 
 /* ===== Phase 1 ===== */
 .headline {
-  font-family: var(--font-display);
-  font-size: clamp(2.4rem, 8vw, 4.5rem);
-  font-weight: 900;
-  letter-spacing: -0.03em;
+  font-family: var(--font-bubble);
+  font-size: clamp(3.2rem, 12vw, 6.5rem);
+  font-weight: 400;
+  letter-spacing: 0.01em;
   background: linear-gradient(135deg, var(--color-gold) 0%, var(--color-magenta) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -425,6 +445,50 @@ body {
 .option-label { font-size: 0.95rem; font-weight: 500; }
 
 /* ===== Phase 3 ===== */
+.card-title {
+  font-family: var(--font-bubble);
+  font-size: clamp(2.8rem, 10vw, 5rem);
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  line-height: 1.1;
+  text-align: center;
+  background: linear-gradient(135deg, var(--color-gold) 0%, var(--color-magenta) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  caret-color: var(--color-gold);
+  cursor: text;
+  outline: none;
+  border-radius: var(--radius-sm);
+  padding: 4px 12px;
+  margin-block-end: 20px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-inline-size: 100%;
+  transition: box-shadow 0.18s;
+}
+
+.card-title:hover {
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-gold) 30%, transparent);
+  border-radius: var(--radius-sm);
+}
+
+.card-title:focus {
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-gold) 60%, transparent);
+  white-space: normal;
+}
+
+.card-title:empty::before {
+  content: 'ESC-Bingo';
+  -webkit-text-fill-color: var(--color-text-muted);
+  opacity: 0.5;
+}
+
+.bingo-card__title {
+  display: none;
+}
+
 .card-actions {
   display: flex;
   gap: 10px;
@@ -606,5 +670,18 @@ body {
   .bingo-card__name {
     color: var(--color-text);
     border-block-end: 1px solid var(--color-border);
+  }
+
+  #card-title { display: none; }
+
+  .bingo-card__title {
+    display: block;
+    font-family: var(--font-bubble);
+    font-size: 42pt;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+    text-align: center;
+    color: var(--color-text);
+    padding: 6mm 0 3mm;
   }
 }
