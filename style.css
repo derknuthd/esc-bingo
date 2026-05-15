@@ -471,7 +471,6 @@ body {
 
 .card-title:hover {
   box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-gold) 30%, transparent);
-  border-radius: var(--radius-sm);
 }
 
 .card-title:focus {
