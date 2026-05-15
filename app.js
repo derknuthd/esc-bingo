@@ -252,8 +252,11 @@ btnStart.disabled = true;
 
 async function loadPresets() {
   try {
-    const res = await fetch('./presets.json');
-    ESC_PRESETS = await res.json();
+    const res = await fetch('./presets.txt');
+    const text = await res.text();
+    ESC_PRESETS = text.split('\n')
+      .map(l => l.trim())
+      .filter(l => l.length > 0 && !l.startsWith('#'));
     pool = [...ESC_PRESETS];
     activePresets = new Set(ESC_PRESETS);
     rebuildPool();
