@@ -8,7 +8,7 @@
 - Felder werden per Fisher-Yates zufällig aus dem Pool gezogen
 
 ### Felder-Pool
-- Presets aus `presets.js` als klickbare Tags; aktive Tags visuell markiert
+- Presets aus `presets.txt` als klickbare Tags; aktive Tags visuell markiert
 - Eigene Begriffe per Texteingabe + Enter oder Button hinzufügbar
 - Aktive Felder als entfernbare Chips (× zum Entfernen)
 - Mindestens 24 Einträge erforderlich; Validierung mit visueller Fehlermeldung
@@ -26,7 +26,7 @@
   - Eine Karte pro DIN-A4-Seite (Portrait), `page-break-after: always`
   - Klare Schrift, sichtbare Rasterränder
 
-## Preset-Felder (`presets.js`)
+## Preset-Felder (`presets.txt`)
 
 Mindestens 40 Einträge. Startpunkt:
 
@@ -82,7 +82,7 @@ export const ESC_PRESETS = [
 
 ## Entwicklungsreihenfolge
 
-1. `presets.js` – vollständige Liste (≥ 40 Einträge)
+1. `presets.txt` – vollständige Liste (≥ 40 Einträge)
 2. `app.js` – Shuffle-Logik + Kartengenerierung (erst Funktion, dann DOM)
 3. `index.html` + `style.css` – Phase-1-UI, dann Phase 2, dann Phase 3
 4. `@media print` CSS finalisieren
