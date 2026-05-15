@@ -21,3 +21,7 @@ export function generateCard(pool, freeFieldEnabled) {
 export function isPoolValid(pool) {
   return pool.length >= MIN_POOL_SIZE;
 }
+
+export function navigateCards(currentIndex, delta, cardCount) {
+  return Math.max(0, Math.min(cardCount - 1, currentIndex + delta));
+}

@@ -3,6 +3,7 @@ import {
   shuffle,
   generateCard,
   isPoolValid,
+  navigateCards,
   MIN_POOL_SIZE,
   FREE_FIELD_INDEX,
   FREE_FIELD_LABEL,
@@ -115,6 +116,38 @@ test('false bei 23 Einträgen', () => {
 
 test('false bei leerem Pool', () => {
   assert.ok(!isPoolValid([]));
+});
+
+// --- navigateCards ---
+console.log('\nnavigateCards');
+
+test('vorwärts innerhalb der Grenzen', () => {
+  assert.equal(navigateCards(2, 1, 5), 3);
+});
+
+test('rückwärts innerhalb der Grenzen', () => {
+  assert.equal(navigateCards(2, -1, 5), 1);
+});
+
+test('nicht unter 0 (Anfang)', () => {
+  assert.equal(navigateCards(0, -1, 5), 0);
+});
+
+test('nicht über cardCount - 1 (Ende)', () => {
+  assert.equal(navigateCards(4, 1, 5), 4);
+});
+
+test('großer negativer Delta wird auf 0 geclampt', () => {
+  assert.equal(navigateCards(1, -99, 5), 0);
+});
+
+test('großer positiver Delta wird auf cardCount - 1 geclampt', () => {
+  assert.equal(navigateCards(3, 99, 5), 4);
+});
+
+test('einzelne Karte bleibt bei Index 0', () => {
+  assert.equal(navigateCards(0, 1, 1), 0);
+  assert.equal(navigateCards(0, -1, 1), 0);
 });
 
 // --- Ergebnis ---
