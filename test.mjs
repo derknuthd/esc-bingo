@@ -151,25 +151,24 @@ test('einzelne Karte bleibt bei Index 0', () => {
   assert.equal(navigateCards(0, -1, 1), 0);
 });
 
-// --- presets.json ---
-console.log('\npresets.json');
+// --- presets.txt ---
+console.log('\npresets.txt');
 
-const presetsJson = JSON.parse(readFileSync('./presets.json', 'utf8'));
-
-test('ist ein Array', () => {
-  assert.ok(Array.isArray(presetsJson));
-});
+const presetsTxt = readFileSync('./presets.txt', 'utf8')
+  .split('\n')
+  .map(l => l.trim())
+  .filter(l => l.length > 0 && !l.startsWith('#'));
 
 test('hat mindestens 40 Einträge', () => {
-  assert.ok(presetsJson.length >= 40, `Nur ${presetsJson.length} Einträge`);
+  assert.ok(presetsTxt.length >= 40, `Nur ${presetsTxt.length} Einträge`);
 });
 
 test('alle Einträge sind nicht-leere Strings', () => {
-  assert.ok(presetsJson.every(p => typeof p === 'string' && p.trim().length > 0));
+  assert.ok(presetsTxt.every(p => p.length > 0));
 });
 
 test('keine Duplikate', () => {
-  assert.equal(new Set(presetsJson).size, presetsJson.length);
+  assert.equal(new Set(presetsTxt).size, presetsTxt.length);
 });
 
 // --- Ergebnis ---
