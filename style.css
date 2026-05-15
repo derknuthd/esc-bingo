@@ -571,10 +571,10 @@ body {
     animation: none !important;
     break-before: page;
     page-break-before: always;
-    border: 2px solid var(--color-text);
+    border: none !important;
     border-radius: 0;
     width: 100%;
-    height: 274mm;
+    height: 250mm;
     box-sizing: border-box;
     overflow: hidden;
     margin: 0;
@@ -587,6 +587,7 @@ body {
 
   .bingo-grid {
     width: 100%;
+    border: 2px solid var(--color-text);
   }
 
   .bingo-cell {
