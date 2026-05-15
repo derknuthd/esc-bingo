@@ -38,6 +38,7 @@ const btnAddCustom    = document.getElementById('btn-add-custom');
 const customChips     = document.getElementById('custom-chips');
 const optFreeField    = document.getElementById('opt-free-field');
 const cardContainer   = document.getElementById('card-container');
+const cardTitle       = document.getElementById('card-title');
 
 // --- Phase transitions ---
 function showPhase(id) {
@@ -152,6 +153,11 @@ function buildCard(fields) {
   const card = document.createElement('div');
   card.className = 'bingo-card';
 
+  const titleEl = document.createElement('div');
+  titleEl.className = 'bingo-card__title';
+  titleEl.textContent = cardTitle.textContent;
+  card.appendChild(titleEl);
+
   const grid = document.createElement('div');
   grid.className = 'bingo-grid';
 
@@ -223,6 +229,41 @@ btnPrev.addEventListener('click', () => showCard(activeCardIndex - 1));
 btnNext.addEventListener('click', () => showCard(activeCardIndex + 1));
 
 btnPrint.addEventListener('click', () => window.print());
+
+// --- Card title (contenteditable) ---
+let titleSnapshot = '';
+
+cardTitle.addEventListener('focus', () => {
+  titleSnapshot = cardTitle.textContent;
+  const sel = window.getSelection();
+  const range = document.createRange();
+  range.selectNodeContents(cardTitle);
+  sel.removeAllRanges();
+  sel.addRange(range);
+});
+
+cardTitle.addEventListener('blur', () => {
+  const trimmed = cardTitle.textContent.trim();
+  cardTitle.textContent = trimmed || 'ESC-Bingo';
+  document.querySelectorAll('.bingo-card__title').forEach(el => {
+    el.textContent = cardTitle.textContent;
+  });
+});
+
+cardTitle.addEventListener('keydown', e => {
+  if (e.key === 'Enter') { e.preventDefault(); cardTitle.blur(); }
+  if (e.key === 'Escape') { cardTitle.textContent = titleSnapshot; cardTitle.blur(); }
+});
+
+cardTitle.addEventListener('paste', e => {
+  e.preventDefault();
+  const text = e.clipboardData.getData('text/plain').replace(/[\r\n]+/g, ' ').trim();
+  const sel = window.getSelection();
+  if (!sel.rangeCount) return;
+  sel.deleteFromDocument();
+  sel.getRangeAt(0).insertNode(document.createTextNode(text));
+  sel.collapseToEnd();
+});
 
 // Swipe support
 let touchStartX = 0;
