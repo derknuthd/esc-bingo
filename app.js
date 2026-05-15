@@ -1,9 +1,9 @@
-import { ESC_PRESETS } from './presets.js';
 import { MIN_POOL_SIZE, FREE_FIELD_INDEX, generateCard, isPoolValid, navigateCards } from './logic.js';
 
 // --- State ---
-let pool = [...ESC_PRESETS];
-let activePresets = new Set(ESC_PRESETS);
+let ESC_PRESETS = [];
+let pool = [];
+let activePresets = new Set();
 let customFields = [];
 let cardCount = 1;
 let freeFieldEnabled = true;
@@ -246,3 +246,22 @@ customInput.addEventListener('keydown', e => {
     if (addCustomField(customInput.value)) customInput.value = '';
   }
 });
+
+// --- Preset loading ---
+btnStart.disabled = true;
+
+async function loadPresets() {
+  try {
+    const res = await fetch('./presets.json');
+    ESC_PRESETS = await res.json();
+    pool = [...ESC_PRESETS];
+    activePresets = new Set(ESC_PRESETS);
+    rebuildPool();
+  } catch (e) {
+    console.error('Presets konnten nicht geladen werden:', e);
+  } finally {
+    btnStart.disabled = false;
+  }
+}
+
+loadPresets();
