@@ -1,5 +1,5 @@
 import { ESC_PRESETS } from './presets.js';
-import { MIN_POOL_SIZE, FREE_FIELD_INDEX, generateCard, isPoolValid } from './logic.js';
+import { MIN_POOL_SIZE, FREE_FIELD_INDEX, generateCard, isPoolValid, navigateCards } from './logic.js';
 
 // --- State ---
 let pool = [...ESC_PRESETS];
@@ -9,6 +9,8 @@ let cardCount = 1;
 let freeFieldEnabled = true;
 let cards = [];
 let activeCardIndex = 0;
+let sessionPool = [];
+let sessionFreeField = true;
 
 // --- DOM refs ---
 const phase1 = document.getElementById('phase-1');
@@ -166,6 +168,7 @@ function buildCard(fields) {
 }
 
 function showCard(index) {
+  if (index < 0 || index >= cards.length) return;
   activeCardIndex = index;
   cardContainer.querySelectorAll('.bingo-card').forEach((el, i) => {
     el.classList.toggle('bingo-card--active', i === index);
@@ -177,6 +180,8 @@ function showCard(index) {
 
 function renderCards(newCards) {
   cards = newCards;
+  sessionPool = [...pool];
+  sessionFreeField = freeFieldEnabled;
   cardContainer.innerHTML = '';
   cards.forEach(fields => cardContainer.appendChild(buildCard(fields)));
   showCard(0);
@@ -209,7 +214,7 @@ btnGenerate.addEventListener('click', () => {
 });
 
 btnNewCard.addEventListener('click', () => {
-  cards.push(generateCard(pool, freeFieldEnabled));
+  cards.push(generateCard(sessionPool, sessionFreeField));
   cardContainer.appendChild(buildCard(cards[cards.length - 1]));
   showCard(cards.length - 1);
 });
@@ -224,7 +229,7 @@ let touchStartX = 0;
 cardContainer.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
 cardContainer.addEventListener('touchend', e => {
   const delta = e.changedTouches[0].clientX - touchStartX;
-  if (Math.abs(delta) > 50) showCard(Math.max(0, Math.min(cards.length - 1, activeCardIndex + (delta < 0 ? 1 : -1))));
+  if (Math.abs(delta) > 50) showCard(navigateCards(activeCardIndex, delta < 0 ? 1 : -1, cards.length));
 }, { passive: true });
 
 btnSelectAll.addEventListener('click', selectAllPresets);
