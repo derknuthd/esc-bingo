@@ -258,7 +258,11 @@ cardTitle.addEventListener('keydown', e => {
 cardTitle.addEventListener('paste', e => {
   e.preventDefault();
   const text = e.clipboardData.getData('text/plain').replace(/[\r\n]+/g, ' ').trim();
-  document.execCommand('insertText', false, text);
+  const sel = window.getSelection();
+  if (!sel.rangeCount) return;
+  sel.deleteFromDocument();
+  sel.getRangeAt(0).insertNode(document.createTextNode(text));
+  sel.collapseToEnd();
 });
 
 // Swipe support
