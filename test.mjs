@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import {
   shuffle,
   generateCard,
@@ -148,6 +149,26 @@ test('großer positiver Delta wird auf cardCount - 1 geclampt', () => {
 test('einzelne Karte bleibt bei Index 0', () => {
   assert.equal(navigateCards(0, 1, 1), 0);
   assert.equal(navigateCards(0, -1, 1), 0);
+});
+
+// --- presets.txt ---
+console.log('\npresets.txt');
+
+const presetsTxt = readFileSync('./presets.txt', 'utf8')
+  .split('\n')
+  .map(l => l.trim())
+  .filter(l => l.length > 0 && !l.startsWith('#'));
+
+test('hat mindestens 40 Einträge', () => {
+  assert.ok(presetsTxt.length >= 40, `Nur ${presetsTxt.length} Einträge`);
+});
+
+test('alle Einträge sind nicht-leere Strings', () => {
+  assert.ok(presetsTxt.every(p => p.length > 0));
+});
+
+test('keine Duplikate', () => {
+  assert.equal(new Set(presetsTxt).size, presetsTxt.length);
 });
 
 // --- Ergebnis ---
