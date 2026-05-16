@@ -1,4 +1,4 @@
-import { MIN_POOL_SIZE, FREE_FIELD_INDEX, generateCard, isPoolValid, navigateCards } from './logic.js';
+import { FREE_FIELD_LABEL, getGridConfig, generateCard, isPoolValid, navigateCards } from './logic.js';
 
 // --- State ---
 let ESC_PRESETS = [];
@@ -7,10 +7,12 @@ let activePresets = new Set();
 let customFields = [];
 let cardCount = 1;
 let freeFieldEnabled = true;
+let gridSize = 5;
 let cards = [];
 let activeCardIndex = 0;
 let sessionPool = [];
 let sessionFreeField = true;
+let sessionGridSize = 5;
 
 // --- DOM refs ---
 const phase1 = document.getElementById('phase-1');
@@ -37,6 +39,8 @@ const customInput     = document.getElementById('custom-input');
 const btnAddCustom    = document.getElementById('btn-add-custom');
 const customChips     = document.getElementById('custom-chips');
 const optFreeField    = document.getElementById('opt-free-field');
+const gridSizeInputs  = document.querySelectorAll('.grid-size-radio');
+const poolCountEl     = document.getElementById('pool-count');
 const cardContainer   = document.getElementById('card-container');
 const cardTitle       = document.getElementById('card-title');
 
@@ -61,7 +65,9 @@ function updateCountDisplay() {
 // --- Pool ---
 function rebuildPool() {
   pool = [...activePresets, ...customFields];
-  btnGenerate.disabled = !isPoolValid(pool);
+  const { minPool } = getGridConfig(gridSize);
+  btnGenerate.disabled = !isPoolValid(pool, gridSize);
+  poolCountEl.textContent = `${pool.length} von mindestens ${minPool} Feldern gewählt`;
 }
 
 // --- Preset tags ---
@@ -161,10 +167,12 @@ function buildCard(fields) {
   const grid = document.createElement('div');
   grid.className = 'bingo-grid';
 
-  fields.forEach((text, i) => {
+  grid.style.setProperty('--grid-size', sessionGridSize);
+
+  fields.forEach(text => {
     const cell = document.createElement('div');
     cell.className = 'bingo-cell';
-    if (freeFieldEnabled && i === FREE_FIELD_INDEX) cell.classList.add('bingo-cell--free');
+    if (text === FREE_FIELD_LABEL) cell.classList.add('bingo-cell--free');
     cell.textContent = text;
     grid.appendChild(cell);
   });
@@ -188,6 +196,7 @@ function renderCards(newCards) {
   cards = newCards;
   sessionPool = [...pool];
   sessionFreeField = freeFieldEnabled;
+  sessionGridSize = gridSize;
   cardContainer.innerHTML = '';
   cards.forEach(fields => cardContainer.appendChild(buildCard(fields)));
   showCard(0);
@@ -197,7 +206,7 @@ function renderCards(newCards) {
 btnStart.addEventListener('click', () => {
   renderPresetTags();
   updateCountDisplay();
-  btnGenerate.disabled = !isPoolValid(pool);
+  rebuildPool();
   showPhase('phase-2');
 });
 
@@ -215,15 +224,24 @@ btnIncrement.addEventListener('click', () => {
 
 btnGenerate.addEventListener('click', () => {
   freeFieldEnabled = optFreeField.checked;
-  renderCards(Array.from({ length: cardCount }, () => generateCard(pool, freeFieldEnabled)));
+  renderCards(Array.from({ length: cardCount }, () => generateCard(pool, freeFieldEnabled, gridSize)));
   showPhase('phase-3');
 });
 
 btnNewCard.addEventListener('click', () => {
-  cards.push(generateCard(sessionPool, sessionFreeField));
+  cards.push(generateCard(sessionPool, sessionFreeField, sessionGridSize));
   cardContainer.appendChild(buildCard(cards[cards.length - 1]));
   showCard(cards.length - 1);
 });
+
+gridSizeInputs.forEach(input => input.addEventListener('change', () => {
+  gridSize = parseInt(input.value, 10);
+  const { freeFieldIndex } = getGridConfig(gridSize);
+  const freefieldSection = optFreeField.closest('.customizer-section');
+  freefieldSection.hidden = freeFieldIndex === null;
+  if (freeFieldIndex === null) optFreeField.checked = false;
+  rebuildPool();
+}));
 
 btnPrev.addEventListener('click', () => showCard(activeCardIndex - 1));
 btnNext.addEventListener('click', () => showCard(activeCardIndex + 1));
