@@ -747,6 +747,7 @@ body {
   #card-title { display: none; }
 
   .bingo-card__title {
+    display: block;
     padding: 6mm 0 3mm;
   }
 }
