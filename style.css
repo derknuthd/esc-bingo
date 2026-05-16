@@ -196,6 +196,26 @@ body {
 }
 .btn--back:hover { color: var(--color-text); }
 
+/* ===== Phase 1: Mode Cards ===== */
+.mode-cards {
+  display: flex;
+  gap: 1.25rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-block-start: 0.5rem;
+}
+
+.mode-card--active {
+  outline: 3px solid var(--color-gold);
+  outline-offset: 3px;
+}
+
+.mode-error {
+  color: var(--color-error);
+  font-size: 0.9rem;
+  margin-block-start: 0.75rem;
+}
+
 /* ===== Phase 2: Count Hero ===== */
 .count-hero {
   flex: 1;
@@ -588,6 +608,10 @@ body {
 .bingo-cell--free {
   background: var(--color-free-bg);
   font-size: 1.6rem;
+}
+
+.bingo-grid--kids .bingo-cell {
+  font-size: clamp(0.9rem, 2.2vw, 1.2rem);
 }
 
 /* ===== Grid-Size Selector ===== */

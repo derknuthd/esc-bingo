@@ -287,6 +287,34 @@ test('keine Duplikate', () => {
   assert.equal(new Set(presetsTxt).size, presetsTxt.length);
 });
 
+// --- presets-kids.txt ---
+console.log('\npresets-kids.txt');
+
+const presetsKidsTxt = readFileSync('./presets-kids.txt', 'utf8')
+  .split('\n')
+  .map(l => l.trim())
+  .filter(l => l.length > 0 && !l.startsWith('#'));
+
+test('hat mindestens 24 Einträge', () => {
+  assert.ok(presetsKidsTxt.length >= 24, `Nur ${presetsKidsTxt.length} Einträge`);
+});
+
+test('ist kompatibel mit 4×4 (≥ 16 Einträge)', () => {
+  assert.ok(presetsKidsTxt.length >= getGridConfig(4).minPool);
+});
+
+test('alle Einträge enthalten mindestens ein Emoji', () => {
+  assert.ok(presetsKidsTxt.every(p => /\p{Emoji}/u.test(p)), 'Einträge ohne Emoji gefunden');
+});
+
+test('alle Einträge sind nicht-leere Strings', () => {
+  assert.ok(presetsKidsTxt.every(p => p.length > 0));
+});
+
+test('keine Duplikate', () => {
+  assert.equal(new Set(presetsKidsTxt).size, presetsKidsTxt.length);
+});
+
 // --- Ergebnis ---
 console.log(`\n${passed} passed, ${failed} failed\n`);
 if (failed > 0) process.exit(1);

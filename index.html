@@ -11,8 +11,12 @@
   <section id="phase-1" class="phase phase--active" aria-hidden="false">
     <div class="phase__inner phase__inner--center">
       <h1 class="headline">Dein ESC Bingo</h1>
-      <p class="subline">Erstell individuelle Bingo-Karten für den Eurovision Song Contest — perfekt für die Party.</p>
-      <button id="btn-start" class="btn btn--primary btn--large">Bingo-Karten erstellen</button>
+      <p class="subline">Wähle deinen Spielmodus:</p>
+      <div class="mode-cards">
+        <button id="btn-mode-classic" class="btn btn--primary btn--large mode-card" type="button">ESC Classic</button>
+        <button id="btn-mode-kids" class="btn btn--primary btn--large mode-card" type="button">Kinder-Modus</button>
+      </div>
+      <p id="mode-error" class="mode-error" hidden>Presets konnten nicht geladen werden. Bitte Seite neu laden.</p>
     </div>
   </section>
 
@@ -59,7 +63,7 @@
                   <span>4×4</span>
                 </label>
                 <label class="grid-size-option">
-                  <input type="radio" name="grid-size" value="5" class="grid-size-radio" checked />
+                  <input type="radio" name="grid-size" value="5" class="grid-size-radio" />
                   <span>5×5</span>
                 </label>
               </div>
@@ -113,6 +117,20 @@
               <label class="option-row">
                 <input type="checkbox" id="opt-free-field" class="option-checkbox" checked />
                 <span class="option-label">Freifeld in der Mitte aktivieren</span>
+              </label>
+            </div>
+          </details>
+
+          <!-- Ebene 4: Kinder-Optionen (nur im Kinder-Modus) -->
+          <details class="customizer-section" id="kids-options-section" hidden>
+            <summary class="customizer-section__toggle">
+              <span>Kinder-Optionen</span>
+              <span class="customizer__arrow" aria-hidden="true">›</span>
+            </summary>
+            <div class="customizer-section__body">
+              <label class="option-row">
+                <input type="checkbox" id="opt-uppercase" class="option-checkbox" checked />
+                <span class="option-label">Alles in Großbuchstaben</span>
               </label>
             </div>
           </details>

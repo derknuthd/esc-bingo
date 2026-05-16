@@ -13,13 +13,17 @@ let activeCardIndex = 0;
 let sessionPool = [];
 let sessionFreeField = true;
 let sessionGridSize = 5;
+let selectedMode = null;
+let uppercaseEnabled = false;
 
 // --- DOM refs ---
 const phase1 = document.getElementById('phase-1');
 const phase2 = document.getElementById('phase-2');
 const phase3 = document.getElementById('phase-3');
 
-const btnStart     = document.getElementById('btn-start');
+const btnModeClassic = document.getElementById('btn-mode-classic');
+const btnModeKids    = document.getElementById('btn-mode-kids');
+const modeError      = document.getElementById('mode-error');
 const btnBack      = document.getElementById('btn-back');
 const btnGenerate  = document.getElementById('btn-generate');
 const btnNewCard   = document.getElementById('btn-new-card');
@@ -39,6 +43,8 @@ const customInput     = document.getElementById('custom-input');
 const btnAddCustom    = document.getElementById('btn-add-custom');
 const customChips     = document.getElementById('custom-chips');
 const optFreeField    = document.getElementById('opt-free-field');
+const optUppercase    = document.getElementById('opt-uppercase');
+const kidsOptionsSection = document.getElementById('kids-options-section');
 const gridSizeInputs  = document.querySelectorAll('.grid-size-radio');
 const cardContainer   = document.getElementById('card-container');
 const cardTitle       = document.getElementById('card-title');
@@ -65,6 +71,15 @@ function updateCountDisplay() {
 function rebuildPool() {
   pool = [...activePresets, ...customFields];
   btnGenerate.disabled = !isPoolValid(pool, gridSize);
+}
+
+function setDefaultGridSize(size) {
+  gridSize = size;
+  gridSizeInputs.forEach(input => { input.checked = parseInt(input.value, 10) === size; });
+  const { freeFieldIndex } = getGridConfig(size);
+  const freefieldSection = optFreeField.closest('.customizer-section');
+  freefieldSection.hidden = freeFieldIndex === null;
+  if (freeFieldIndex === null) optFreeField.checked = false;
 }
 
 // --- Preset tags ---
@@ -162,7 +177,7 @@ function buildCard(fields) {
   card.appendChild(titleEl);
 
   const grid = document.createElement('div');
-  grid.className = 'bingo-grid';
+  grid.className = selectedMode === 'presets-kids.txt' ? 'bingo-grid bingo-grid--kids' : 'bingo-grid';
 
   grid.style.setProperty('--grid-size', sessionGridSize);
 
@@ -170,7 +185,7 @@ function buildCard(fields) {
     const cell = document.createElement('div');
     cell.className = 'bingo-cell';
     if (text === FREE_FIELD_LABEL) cell.classList.add('bingo-cell--free');
-    cell.textContent = text;
+    cell.textContent = (uppercaseEnabled && text !== FREE_FIELD_LABEL) ? text.toUpperCase() : text;
     grid.appendChild(cell);
   });
 
@@ -199,12 +214,60 @@ function renderCards(newCards) {
   showCard(0);
 }
 
-// --- Event listeners ---
-btnStart.addEventListener('click', () => {
-  renderPresetTags();
-  updateCountDisplay();
+// --- Mode selection ---
+const presetCache = {};
+
+async function loadPresets(filename) {
+  if (!presetCache[filename]) {
+    const res = await fetch(`./${filename}`);
+    if (!res.ok) throw new Error(res.status);
+    const text = await res.text();
+    presetCache[filename] = text.split('\n')
+      .map(l => l.trim())
+      .filter(l => l.length > 0 && !l.startsWith('#'));
+  }
+  ESC_PRESETS = [...presetCache[filename]];
+  pool = [...ESC_PRESETS];
+  activePresets = new Set(ESC_PRESETS);
+  customFields = [];
   rebuildPool();
-  showPhase('phase-2');
+}
+
+async function selectMode(filename, defaultSize) {
+  modeError.hidden = true;
+  btnModeClassic.disabled = true;
+  btnModeKids.disabled = true;
+  try {
+    selectedMode = filename;
+    setDefaultGridSize(defaultSize);
+    const isKids = filename === 'presets-kids.txt';
+    kidsOptionsSection.hidden = !isKids;
+    uppercaseEnabled = isKids;
+    optUppercase.checked = isKids;
+    await loadPresets(filename);
+    renderPresetTags();
+    updateCountDisplay();
+    rebuildPool();
+    showPhase('phase-2');
+  } catch {
+    modeError.hidden = false;
+  } finally {
+    btnModeClassic.disabled = false;
+    btnModeKids.disabled = false;
+  }
+}
+
+// --- Event listeners ---
+btnModeClassic.addEventListener('click', () => {
+  btnModeClassic.classList.add('mode-card--active');
+  btnModeKids.classList.remove('mode-card--active');
+  selectMode('presets.txt', 5);
+});
+
+btnModeKids.addEventListener('click', () => {
+  btnModeKids.classList.add('mode-card--active');
+  btnModeClassic.classList.remove('mode-card--active');
+  selectMode('presets-kids.txt', 4);
 });
 
 btnBack.addEventListener('click', () => showPhase('phase-1'));
@@ -288,6 +351,8 @@ cardContainer.addEventListener('touchend', e => {
   if (Math.abs(delta) > 50) showCard(navigateCards(activeCardIndex, delta < 0 ? 1 : -1, cards.length));
 }, { passive: true });
 
+optUppercase.addEventListener('change', () => { uppercaseEnabled = optUppercase.checked; });
+
 btnSelectAll.addEventListener('click', selectAllPresets);
 btnDeselectAll.addEventListener('click', deselectAllPresets);
 
@@ -303,25 +368,3 @@ customInput.addEventListener('keydown', e => {
   }
 });
 
-// --- Preset loading ---
-btnStart.disabled = true;
-
-async function loadPresets() {
-  try {
-    const res = await fetch('./presets.txt');
-    if (!res.ok) throw new Error(res.status);
-    const text = await res.text();
-    ESC_PRESETS = text.split('\n')
-      .map(l => l.trim())
-      .filter(l => l.length > 0 && !l.startsWith('#'));
-    pool = [...ESC_PRESETS];
-    activePresets = new Set(ESC_PRESETS);
-    rebuildPool();
-  } catch (e) {
-    console.error('Presets konnten nicht geladen werden:', e);
-  } finally {
-    btnStart.disabled = false;
-  }
-}
-
-loadPresets();
