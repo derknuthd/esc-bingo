@@ -1,6 +1,7 @@
-import { FREE_FIELD_LABEL, getGridConfig, generateCard, isPoolValid, navigateCards } from './logic.js';
+import { FREE_FIELD_LABEL, getGridConfig, generateCard, isPoolValid, navigateCards, parsePresetGroups } from './logic.js';
 
 // --- State ---
+let ESC_PRESET_GROUPS = [];
 let ESC_PRESETS = [];
 let pool = [];
 let activePresets = new Set();
@@ -83,46 +84,123 @@ function setDefaultGridSize(size) {
 }
 
 // --- Preset tags ---
-function renderPresetTags() {
+function getGroupOpenStates() {
+  const states = {};
+  presetContainer.querySelectorAll('details.preset-group').forEach(el => {
+    const title = el.querySelector('.preset-group__title');
+    if (title) states[title.textContent] = el.open;
+  });
+  return states;
+}
+
+function renderPresetTags(openStates = {}) {
   presetContainer.innerHTML = '';
-  ESC_PRESETS.forEach(preset => {
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    const isActive = activePresets.has(preset);
-    btn.className = isActive ? 'tag tag--active' : 'tag';
-    btn.textContent = preset;
-    btn.setAttribute('aria-pressed', String(isActive));
-    btn.addEventListener('click', () => {
-      if (activePresets.has(preset)) {
-        activePresets.delete(preset);
-        btn.classList.remove('tag--active');
-        btn.setAttribute('aria-pressed', 'false');
+  ESC_PRESET_GROUPS.forEach(({ group, items }) => {
+    const details = document.createElement('details');
+    details.className = 'preset-group';
+    if (openStates[group]) details.open = true;
+
+    const summary = document.createElement('summary');
+    summary.className = 'preset-group__header';
+
+    const indicator = document.createElement('span');
+    indicator.className = 'preset-group__indicator';
+
+    const title = document.createElement('span');
+    title.className = 'preset-group__title';
+    title.textContent = group;
+
+    const btnAll = document.createElement('button');
+    btnAll.type = 'button';
+    btnAll.className = 'btn btn--ghost btn--sm';
+    btnAll.textContent = 'Alle';
+
+    const btnNone = document.createElement('button');
+    btnNone.type = 'button';
+    btnNone.className = 'btn btn--ghost btn--sm';
+    btnNone.textContent = 'Keine';
+
+    summary.appendChild(indicator);
+    summary.appendChild(title);
+    summary.appendChild(btnAll);
+    summary.appendChild(btnNone);
+    details.appendChild(summary);
+
+    function updateIndicator() {
+      const activeCount = items.filter(p => activePresets.has(p)).length;
+      if (activeCount === items.length) {
+        indicator.dataset.state = 'all';
+        indicator.textContent = '✓';
+      } else if (activeCount === 0) {
+        indicator.dataset.state = 'none';
+        indicator.textContent = '';
       } else {
-        activePresets.add(preset);
-        btn.classList.add('tag--active');
-        btn.setAttribute('aria-pressed', 'true');
+        indicator.dataset.state = 'partial';
+        indicator.textContent = '−';
       }
+    }
+
+    btnAll.addEventListener('click', e => {
+      e.stopPropagation();
+      items.forEach(p => activePresets.add(p));
+      details.querySelectorAll('.preset-item').forEach(btn => {
+        btn.classList.add('preset-item--active');
+        btn.setAttribute('aria-pressed', 'true');
+      });
+      updateIndicator();
       rebuildPool();
     });
-    presetContainer.appendChild(btn);
+
+    btnNone.addEventListener('click', e => {
+      e.stopPropagation();
+      items.forEach(p => activePresets.delete(p));
+      details.querySelectorAll('.preset-item').forEach(btn => {
+        btn.classList.remove('preset-item--active');
+        btn.setAttribute('aria-pressed', 'false');
+      });
+      updateIndicator();
+      rebuildPool();
+    });
+
+    items.forEach(preset => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      const isActive = activePresets.has(preset);
+      btn.className = isActive ? 'preset-item preset-item--active' : 'preset-item';
+      btn.textContent = preset;
+      btn.setAttribute('aria-pressed', String(isActive));
+      btn.addEventListener('click', () => {
+        if (activePresets.has(preset)) {
+          activePresets.delete(preset);
+          btn.classList.remove('preset-item--active');
+          btn.setAttribute('aria-pressed', 'false');
+        } else {
+          activePresets.add(preset);
+          btn.classList.add('preset-item--active');
+          btn.setAttribute('aria-pressed', 'true');
+        }
+        updateIndicator();
+        rebuildPool();
+      });
+      details.appendChild(btn);
+    });
+
+    updateIndicator();
+    presetContainer.appendChild(details);
   });
 }
 
 function selectAllPresets() {
+  const openStates = getGroupOpenStates();
   activePresets = new Set(ESC_PRESETS);
-  presetContainer.querySelectorAll('.tag').forEach(btn => {
-    btn.classList.add('tag--active');
-    btn.setAttribute('aria-pressed', 'true');
-  });
+  renderPresetTags(openStates);
   rebuildPool();
 }
 
 function deselectAllPresets() {
+  const openStates = getGroupOpenStates();
   activePresets.clear();
-  presetContainer.querySelectorAll('.tag').forEach(btn => {
-    btn.classList.remove('tag--active');
-    btn.setAttribute('aria-pressed', 'false');
-  });
+  renderPresetTags(openStates);
   rebuildPool();
 }
 
@@ -222,11 +300,10 @@ async function loadPresets(filename) {
     const res = await fetch(`./${filename}`);
     if (!res.ok) throw new Error(res.status);
     const text = await res.text();
-    presetCache[filename] = text.split('\n')
-      .map(l => l.trim())
-      .filter(l => l.length > 0 && !l.startsWith('#'));
+    presetCache[filename] = parsePresetGroups(text);
   }
-  ESC_PRESETS = [...presetCache[filename]];
+  ESC_PRESET_GROUPS = presetCache[filename];
+  ESC_PRESETS = ESC_PRESET_GROUPS.flatMap(g => g.items);
   pool = [...ESC_PRESETS];
   activePresets = new Set(ESC_PRESETS);
   customFields = [];
