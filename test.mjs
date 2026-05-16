@@ -5,8 +5,8 @@ import {
   generateCard,
   isPoolValid,
   navigateCards,
-  MIN_POOL_SIZE,
-  FREE_FIELD_INDEX,
+  getGridConfig,
+  GRID_CONFIGS,
   FREE_FIELD_LABEL,
 } from './logic.js';
 
@@ -26,7 +26,9 @@ function test(name, fn) {
 }
 
 const POOL = Array.from({ length: 30 }, (_, i) => `Feld ${i + 1}`);
-const MIN_POOL = Array.from({ length: MIN_POOL_SIZE }, (_, i) => `Feld ${i + 1}`);
+const POOL_5x5 = Array.from({ length: getGridConfig(5).minPool }, (_, i) => `Feld ${i + 1}`);
+const POOL_4x4 = Array.from({ length: getGridConfig(4).minPool }, (_, i) => `Feld ${i + 1}`);
+const POOL_3x3 = Array.from({ length: getGridConfig(3).minPool }, (_, i) => `Feld ${i + 1}`);
 
 // --- shuffle ---
 console.log('\nshuffle');
@@ -52,71 +54,185 @@ test('erzeugt unterschiedliche Reihenfolgen', () => {
   assert.ok(results.size > 1, 'Alle 20 Shuffles identisch — Zufall defekt');
 });
 
-// --- generateCard mit Freifeld ---
-console.log('\ngenerateCard (freeField = true)');
+// --- getGridConfig ---
+console.log('\ngetGridConfig');
 
-test('gibt genau 25 Felder zurück', () => {
-  assert.equal(generateCard(POOL, true).length, 25);
+test('liefert korrekte Werte für 3×3', () => {
+  const cfg = getGridConfig(3);
+  assert.equal(cfg.size, 3);
+  assert.equal(cfg.totalCells, 9);
+  assert.equal(cfg.minPool, 8);
+  assert.equal(cfg.freeFieldIndex, 4);
 });
 
-test(`Freifeld an Index ${FREE_FIELD_INDEX}`, () => {
-  assert.equal(generateCard(POOL, true)[FREE_FIELD_INDEX], FREE_FIELD_LABEL);
+test('liefert korrekte Werte für 4×4', () => {
+  const cfg = getGridConfig(4);
+  assert.equal(cfg.size, 4);
+  assert.equal(cfg.totalCells, 16);
+  assert.equal(cfg.minPool, 16);
+  assert.equal(cfg.freeFieldIndex, null);
+});
+
+test('liefert korrekte Werte für 5×5', () => {
+  const cfg = getGridConfig(5);
+  assert.equal(cfg.size, 5);
+  assert.equal(cfg.totalCells, 25);
+  assert.equal(cfg.minPool, 24);
+  assert.equal(cfg.freeFieldIndex, 12);
+});
+
+test('fällt auf 5×5 zurück bei unbekannter Größe', () => {
+  assert.deepEqual(getGridConfig(99), GRID_CONFIGS[5]);
+  assert.deepEqual(getGridConfig(0), GRID_CONFIGS[5]);
+});
+
+// --- generateCard 5×5 mit Freifeld ---
+console.log('\ngenerateCard 5×5 (freeField = true)');
+
+const FREE_IDX_5 = getGridConfig(5).freeFieldIndex;
+
+test('gibt genau 25 Felder zurück', () => {
+  assert.equal(generateCard(POOL, true, 5).length, 25);
+});
+
+test(`Freifeld an Index ${FREE_IDX_5}`, () => {
+  assert.equal(generateCard(POOL, true, 5)[FREE_IDX_5], FREE_FIELD_LABEL);
 });
 
 test('alle anderen Felder kommen aus dem Pool', () => {
-  const card = generateCard(POOL, true).filter(f => f !== FREE_FIELD_LABEL);
+  const card = generateCard(POOL, true, 5).filter(f => f !== FREE_FIELD_LABEL);
   assert.ok(card.every(f => POOL.includes(f)));
 });
 
 test('keine doppelten Felder', () => {
-  const fields = generateCard(POOL, true).filter(f => f !== FREE_FIELD_LABEL);
+  const fields = generateCard(POOL, true, 5).filter(f => f !== FREE_FIELD_LABEL);
   assert.equal(new Set(fields).size, fields.length);
 });
 
-test('funktioniert mit genau MIN_POOL_SIZE Einträgen', () => {
-  const card = generateCard(MIN_POOL, true);
+test('funktioniert mit genau minPool Einträgen', () => {
+  const card = generateCard(POOL_5x5, true, 5);
   assert.equal(card.length, 25);
-  assert.equal(card[FREE_FIELD_INDEX], FREE_FIELD_LABEL);
+  assert.equal(card[FREE_IDX_5], FREE_FIELD_LABEL);
 });
 
-// --- generateCard ohne Freifeld ---
-console.log('\ngenerateCard (freeField = false)');
+// --- generateCard 5×5 ohne Freifeld ---
+console.log('\ngenerateCard 5×5 (freeField = false)');
 
 test('gibt genau 25 Felder zurück', () => {
-  assert.equal(generateCard(POOL, false).length, 25);
+  assert.equal(generateCard(POOL, false, 5).length, 25);
 });
 
 test('kein Freifeld-Symbol enthalten', () => {
-  assert.ok(!generateCard(POOL, false).includes(FREE_FIELD_LABEL));
+  assert.ok(!generateCard(POOL, false, 5).includes(FREE_FIELD_LABEL));
 });
 
 test('alle Felder kommen aus dem Pool', () => {
-  const card = generateCard(POOL, false);
+  const card = generateCard(POOL, false, 5);
   assert.ok(card.every(f => POOL.includes(f)));
 });
 
 test('keine doppelten Felder', () => {
-  const card = generateCard(POOL, false);
+  const card = generateCard(POOL, false, 5);
   assert.equal(new Set(card).size, card.length);
+});
+
+// --- generateCard 3×3 ---
+console.log('\ngenerateCard 3×3');
+
+const FREE_IDX_3 = getGridConfig(3).freeFieldIndex;
+
+test('gibt genau 9 Felder zurück', () => {
+  assert.equal(generateCard(POOL, true, 3).length, 9);
+});
+
+test(`Freifeld an Index ${FREE_IDX_3}`, () => {
+  assert.equal(generateCard(POOL, true, 3)[FREE_IDX_3], FREE_FIELD_LABEL);
+});
+
+test('alle anderen Felder kommen aus dem Pool', () => {
+  const card = generateCard(POOL, true, 3).filter(f => f !== FREE_FIELD_LABEL);
+  assert.ok(card.every(f => POOL.includes(f)));
+});
+
+test('keine doppelten Felder', () => {
+  const fields = generateCard(POOL, true, 3).filter(f => f !== FREE_FIELD_LABEL);
+  assert.equal(new Set(fields).size, fields.length);
+});
+
+test('funktioniert mit genau minPool Einträgen', () => {
+  const card = generateCard(POOL_3x3, true, 3);
+  assert.equal(card.length, 9);
+  assert.equal(card[FREE_IDX_3], FREE_FIELD_LABEL);
+});
+
+// --- generateCard 4×4 ---
+console.log('\ngenerateCard 4×4');
+
+test('gibt genau 16 Felder zurück', () => {
+  assert.equal(generateCard(POOL, true, 4).length, 16);
+});
+
+test('kein Freifeld-Symbol auch wenn freeField = true (kein Mittelfeld)', () => {
+  assert.ok(!generateCard(POOL, true, 4).includes(FREE_FIELD_LABEL));
+});
+
+test('kein Freifeld-Symbol wenn freeField = false', () => {
+  assert.ok(!generateCard(POOL, false, 4).includes(FREE_FIELD_LABEL));
+});
+
+test('alle Felder kommen aus dem Pool', () => {
+  const card = generateCard(POOL, true, 4);
+  assert.ok(card.every(f => POOL.includes(f)));
+});
+
+test('keine doppelten Felder', () => {
+  const card = generateCard(POOL, true, 4);
+  assert.equal(new Set(card).size, card.length);
+});
+
+test('funktioniert mit genau minPool Einträgen', () => {
+  const card = generateCard(POOL_4x4, true, 4);
+  assert.equal(card.length, 16);
 });
 
 // --- isPoolValid ---
 console.log('\nisPoolValid');
 
-test('true bei genau 24 Einträgen', () => {
+test('5×5: true bei genau 24 Einträgen', () => {
+  assert.ok(isPoolValid(Array.from({ length: 24 }, (_, i) => `F${i}`), 5));
+});
+
+test('5×5: true bei mehr als 24 Einträgen', () => {
+  assert.ok(isPoolValid(Array.from({ length: 45 }, (_, i) => `F${i}`), 5));
+});
+
+test('5×5: false bei 23 Einträgen', () => {
+  assert.ok(!isPoolValid(Array.from({ length: 23 }, (_, i) => `F${i}`), 5));
+});
+
+test('5×5: false bei leerem Pool', () => {
+  assert.ok(!isPoolValid([], 5));
+});
+
+test('4×4: true bei genau 16 Einträgen', () => {
+  assert.ok(isPoolValid(Array.from({ length: 16 }, (_, i) => `F${i}`), 4));
+});
+
+test('4×4: false bei 15 Einträgen', () => {
+  assert.ok(!isPoolValid(Array.from({ length: 15 }, (_, i) => `F${i}`), 4));
+});
+
+test('3×3: true bei genau 8 Einträgen', () => {
+  assert.ok(isPoolValid(Array.from({ length: 8 }, (_, i) => `F${i}`), 3));
+});
+
+test('3×3: false bei 7 Einträgen', () => {
+  assert.ok(!isPoolValid(Array.from({ length: 7 }, (_, i) => `F${i}`), 3));
+});
+
+test('nutzt gridSize 5 als Default', () => {
   assert.ok(isPoolValid(Array.from({ length: 24 }, (_, i) => `F${i}`)));
-});
-
-test('true bei mehr als 24 Einträgen', () => {
-  assert.ok(isPoolValid(Array.from({ length: 45 }, (_, i) => `F${i}`)));
-});
-
-test('false bei 23 Einträgen', () => {
   assert.ok(!isPoolValid(Array.from({ length: 23 }, (_, i) => `F${i}`)));
-});
-
-test('false bei leerem Pool', () => {
-  assert.ok(!isPoolValid([]));
 });
 
 // --- navigateCards ---
