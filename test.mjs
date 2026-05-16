@@ -8,6 +8,7 @@ import {
   getGridConfig,
   GRID_CONFIGS,
   FREE_FIELD_LABEL,
+  parsePresetGroups,
 } from './logic.js';
 
 let passed = 0;
@@ -313,6 +314,49 @@ test('alle Einträge sind nicht-leere Strings', () => {
 
 test('keine Duplikate', () => {
   assert.equal(new Set(presetsKidsTxt).size, presetsKidsTxt.length);
+});
+
+// --- parsePresetGroups ---
+console.log('\nparsePresetGroups');
+
+test('gibt leeres Array für leeren Text zurück', () => {
+  assert.deepEqual(parsePresetGroups(''), []);
+});
+
+test('gibt leeres Array zurück wenn keine Gruppen vorhanden', () => {
+  assert.deepEqual(parsePresetGroups('Zeile ohne Gruppe\nNoch eine'), []);
+});
+
+test('parst eine Gruppe korrekt', () => {
+  const result = parsePresetGroups('# Gruppe A\nItem 1\nItem 2');
+  assert.equal(result.length, 1);
+  assert.equal(result[0].group, 'Gruppe A');
+  assert.deepEqual(result[0].items, ['Item 1', 'Item 2']);
+});
+
+test('parst mehrere Gruppen', () => {
+  const result = parsePresetGroups('# A\nA1\n# B\nB1\nB2');
+  assert.equal(result.length, 2);
+  assert.equal(result[0].group, 'A');
+  assert.deepEqual(result[1].items, ['B1', 'B2']);
+});
+
+test('ignoriert Leerzeilen und Zeilen vor der ersten Gruppe', () => {
+  const result = parsePresetGroups('ignoriert\n\n# Gruppe\n\nItem');
+  assert.equal(result.length, 1);
+  assert.deepEqual(result[0].items, ['Item']);
+});
+
+test('presets.txt: hat mindestens 5 Gruppen', () => {
+  const text = readFileSync('./presets.txt', 'utf8');
+  const groups = parsePresetGroups(text);
+  assert.ok(groups.length >= 5, `Nur ${groups.length} Gruppen gefunden`);
+});
+
+test('presets-kids.txt: hat mindestens 3 Gruppen', () => {
+  const text = readFileSync('./presets-kids.txt', 'utf8');
+  const groups = parsePresetGroups(text);
+  assert.ok(groups.length >= 3, `Nur ${groups.length} Gruppen gefunden`);
 });
 
 // --- Ergebnis ---
