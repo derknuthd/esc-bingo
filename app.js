@@ -14,6 +14,7 @@ let sessionPool = [];
 let sessionFreeField = true;
 let sessionGridSize = 5;
 let selectedMode = null;
+let uppercaseEnabled = false;
 
 // --- DOM refs ---
 const phase1 = document.getElementById('phase-1');
@@ -41,6 +42,8 @@ const customInput     = document.getElementById('custom-input');
 const btnAddCustom    = document.getElementById('btn-add-custom');
 const customChips     = document.getElementById('custom-chips');
 const optFreeField    = document.getElementById('opt-free-field');
+const optUppercase    = document.getElementById('opt-uppercase');
+const kidsOptionsSection = document.getElementById('kids-options-section');
 const gridSizeInputs  = document.querySelectorAll('.grid-size-radio');
 const cardContainer   = document.getElementById('card-container');
 const cardTitle       = document.getElementById('card-title');
@@ -181,7 +184,7 @@ function buildCard(fields) {
     const cell = document.createElement('div');
     cell.className = 'bingo-cell';
     if (text === FREE_FIELD_LABEL) cell.classList.add('bingo-cell--free');
-    cell.textContent = text;
+    cell.textContent = (uppercaseEnabled && text !== FREE_FIELD_LABEL) ? text.toUpperCase() : text;
     grid.appendChild(cell);
   });
 
@@ -232,6 +235,10 @@ async function loadPresets(filename) {
 async function selectMode(filename, defaultSize) {
   selectedMode = filename;
   setDefaultGridSize(defaultSize);
+  const isKids = filename === 'presets-kids.txt';
+  kidsOptionsSection.hidden = !isKids;
+  uppercaseEnabled = isKids;
+  optUppercase.checked = isKids;
   await loadPresets(filename);
   renderPresetTags();
   updateCountDisplay();
@@ -332,6 +339,8 @@ cardContainer.addEventListener('touchend', e => {
   const delta = e.changedTouches[0].clientX - touchStartX;
   if (Math.abs(delta) > 50) showCard(navigateCards(activeCardIndex, delta < 0 ? 1 : -1, cards.length));
 }, { passive: true });
+
+optUppercase.addEventListener('change', () => { uppercaseEnabled = optUppercase.checked; });
 
 btnSelectAll.addEventListener('click', selectAllPresets);
 btnDeselectAll.addEventListener('click', deselectAllPresets);
