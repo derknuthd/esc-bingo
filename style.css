@@ -210,6 +210,12 @@ body {
   outline-offset: 3px;
 }
 
+.mode-error {
+  color: var(--color-error);
+  font-size: 0.9rem;
+  margin-block-start: 0.75rem;
+}
+
 /* ===== Phase 2: Count Hero ===== */
 .count-hero {
   flex: 1;
