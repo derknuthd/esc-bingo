@@ -624,7 +624,7 @@ body {
 
 .grid-size-radio:checked + span {
   background: var(--color-magenta);
-  color: #fff;
+  color: var(--color-on-primary);
 }
 
 .grid-size-radio:focus-visible + span {
