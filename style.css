@@ -566,7 +566,7 @@ body {
 
 .bingo-grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(var(--grid-size, 5), 1fr);
 }
 
 .bingo-cell {
@@ -588,6 +588,48 @@ body {
 .bingo-cell--free {
   background: var(--color-free-bg);
   font-size: 1.6rem;
+}
+
+/* ===== Grid-Size Selector ===== */
+.grid-size-selector {
+  display: flex;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  width: fit-content;
+}
+
+.grid-size-radio {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+
+.grid-size-option span {
+  display: block;
+  padding: 6px 16px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  user-select: none;
+  border-inline-end: 1px solid var(--color-border);
+  transition: background-color 0.15s, color 0.15s;
+}
+
+.grid-size-option:last-child span {
+  border-inline-end: none;
+}
+
+.grid-size-radio:checked + span {
+  background: var(--color-magenta);
+  color: var(--color-on-primary);
+}
+
+.grid-size-radio:focus-visible + span {
+  outline: 2px solid var(--color-magenta);
+  outline-offset: -2px;
 }
 
 /* ===== Print ===== */
