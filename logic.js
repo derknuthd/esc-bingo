@@ -35,3 +35,19 @@ export function isPoolValid(pool, gridSize = 5) {
 export function navigateCards(currentIndex, delta, cardCount) {
   return Math.max(0, Math.min(cardCount - 1, currentIndex + delta));
 }
+
+export function parsePresetGroups(text) {
+  const groups = [];
+  let current = null;
+  for (const rawLine of text.split('\n')) {
+    const line = rawLine.trim();
+    if (!line) continue;
+    if (line.startsWith('# ')) {
+      current = { group: line.slice(2), items: [] };
+      groups.push(current);
+    } else if (current) {
+      current.items.push(line);
+    }
+  }
+  return groups;
+}
