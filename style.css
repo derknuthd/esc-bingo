@@ -361,13 +361,115 @@ body {
   gap: 8px;
 }
 
-/* ===== Preset Tags ===== */
-.tag-cloud {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 7px;
+/* ===== Preset Groups ===== */
+details.preset-group {
+  margin-block-end: 2px;
 }
 
+details.preset-group summary {
+  list-style: none;
+  cursor: pointer;
+  user-select: none;
+}
+details.preset-group summary::-webkit-details-marker { display: none; }
+
+.preset-group__header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding-block: var(--space-2);
+  border-block-end: 1px solid var(--color-border);
+  transition: background-color 0.1s;
+}
+
+@media (hover: hover) {
+  .preset-group__header:hover { background: var(--color-surface-2); }
+}
+
+.preset-group__header::after {
+  content: '▶';
+  font-size: 0.65rem;
+  color: var(--color-text-muted);
+  transition: transform 0.15s;
+  margin-inline-start: auto;
+  margin-inline-end: var(--space-1);
+}
+
+details[open] .preset-group__header::after {
+  transform: rotate(90deg);
+}
+
+.preset-group__indicator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.4em;
+  font-size: 0.85rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.preset-group__indicator[data-state="all"] { color: var(--color-magenta); }
+.preset-group__indicator[data-state="partial"] { color: var(--color-text-muted); }
+.preset-group__indicator[data-state="none"] { color: transparent; }
+
+.preset-group__title {
+  flex: 1;
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--color-text);
+}
+
+.preset-group__header .btn {
+  font-size: 0.72rem;
+  padding: 2px 8px;
+  min-block-size: auto;
+}
+
+.preset-item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-block-size: 44px;
+  padding-inline: var(--space-2);
+  background: none;
+  border: none;
+  border-block-end: 1px solid var(--color-border);
+  text-align: start;
+  cursor: pointer;
+  color: var(--color-text-muted);
+  font-family: var(--font-text);
+  font-size: 0.9rem;
+  transition: background-color 0.1s, color 0.1s;
+  gap: var(--space-2);
+}
+
+.preset-item::before {
+  content: '';
+  display: inline-block;
+  width: 1.1em;
+  flex-shrink: 0;
+}
+
+.preset-item--active {
+  color: var(--color-text);
+  font-weight: 500;
+}
+
+.preset-item--active::before {
+  content: '✓';
+  color: var(--color-magenta);
+  font-weight: 700;
+}
+
+@media (hover: hover) {
+  .preset-item:hover {
+    background: var(--color-surface-2);
+    color: var(--color-text);
+  }
+}
+
+/* ===== Custom-Field Tags (weiterhin als Chips) ===== */
 .tag {
   background: var(--color-surface-2);
   border: 1px solid var(--color-border);
