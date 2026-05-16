@@ -632,13 +632,6 @@ body {
   outline-offset: -2px;
 }
 
-/* ===== Pool-Zähler ===== */
-.pool-count {
-  font-size: 0.85rem;
-  color: var(--color-text-muted);
-  margin-block: 4px 0;
-}
-
 /* ===== Print ===== */
 @page { size: A4 portrait; margin: 10mm; }
 

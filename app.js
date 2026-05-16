@@ -40,7 +40,6 @@ const btnAddCustom    = document.getElementById('btn-add-custom');
 const customChips     = document.getElementById('custom-chips');
 const optFreeField    = document.getElementById('opt-free-field');
 const gridSizeInputs  = document.querySelectorAll('.grid-size-radio');
-const poolCountEl     = document.getElementById('pool-count');
 const cardContainer   = document.getElementById('card-container');
 const cardTitle       = document.getElementById('card-title');
 
@@ -65,9 +64,7 @@ function updateCountDisplay() {
 // --- Pool ---
 function rebuildPool() {
   pool = [...activePresets, ...customFields];
-  const { minPool } = getGridConfig(gridSize);
   btnGenerate.disabled = !isPoolValid(pool, gridSize);
-  poolCountEl.textContent = `${pool.length} von mindestens ${minPool} Feldern gewählt`;
 }
 
 // --- Preset tags ---
