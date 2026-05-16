@@ -173,7 +173,7 @@ function buildCard(fields) {
   card.appendChild(titleEl);
 
   const grid = document.createElement('div');
-  grid.className = 'bingo-grid';
+  grid.className = selectedMode === 'presets-kids.txt' ? 'bingo-grid bingo-grid--kids' : 'bingo-grid';
 
   grid.style.setProperty('--grid-size', sessionGridSize);
 

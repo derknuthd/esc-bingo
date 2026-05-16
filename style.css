@@ -205,35 +205,10 @@ body {
   margin-block-start: 0.5rem;
 }
 
-.mode-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 1.5rem 2rem;
-  background: var(--color-surface);
-  border: 2px solid var(--color-border);
-  border-radius: 1rem;
-  cursor: pointer;
-  font-family: var(--font-text);
-  color: var(--color-text);
-  min-width: 10rem;
-  transition: border-color 0.2s, transform 0.15s;
-}
-
-.mode-card:hover {
-  border-color: var(--color-magenta);
-  transform: translateY(-2px);
-}
-
 .mode-card--active {
-  border-color: var(--color-gold);
-  background: var(--color-surface-2);
+  outline: 3px solid var(--color-gold);
+  outline-offset: 3px;
 }
-
-.mode-card__icon  { font-size: 2.5rem; line-height: 1; }
-.mode-card__title { font-weight: 700; font-size: 1.1rem; }
-.mode-card__desc  { font-size: 0.85rem; color: var(--color-text-muted); }
 
 /* ===== Phase 2: Count Hero ===== */
 .count-hero {
@@ -627,6 +602,10 @@ body {
 .bingo-cell--free {
   background: var(--color-free-bg);
   font-size: 1.6rem;
+}
+
+.bingo-grid--kids .bingo-cell {
+  font-size: clamp(0.9rem, 2.2vw, 1.2rem);
 }
 
 /* ===== Grid-Size Selector ===== */
