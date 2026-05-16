@@ -30,6 +30,7 @@
           <span id="card-count-display" class="stepper__value" aria-live="polite">1</span>
           <button id="btn-increment" type="button" class="stepper__btn" aria-label="Mehr">+</button>
         </div>
+        <p id="pool-count" class="pool-count" aria-live="polite">0 von mindestens 24 Feldern gewählt</p>
         <button id="btn-generate" class="btn btn--primary btn--large">Karten generieren</button>
       </div>
 
@@ -41,6 +42,30 @@
         </summary>
 
         <div class="customizer__body">
+
+          <!-- Ebene 0: Rastergröße -->
+          <details class="customizer-section" open>
+            <summary class="customizer-section__toggle">
+              <span>Rastergröße</span>
+              <span class="customizer__arrow" aria-hidden="true">›</span>
+            </summary>
+            <div class="customizer-section__body">
+              <div class="grid-size-selector" role="group" aria-label="Rastergröße wählen">
+                <label class="grid-size-option">
+                  <input type="radio" name="grid-size" value="3" class="grid-size-radio" />
+                  <span>3×3</span>
+                </label>
+                <label class="grid-size-option">
+                  <input type="radio" name="grid-size" value="4" class="grid-size-radio" />
+                  <span>4×4</span>
+                </label>
+                <label class="grid-size-option">
+                  <input type="radio" name="grid-size" value="5" class="grid-size-radio" checked />
+                  <span>5×5</span>
+                </label>
+              </div>
+            </div>
+          </details>
 
           <!-- Ebene 1: Bestehende Klischees -->
           <details class="customizer-section">
