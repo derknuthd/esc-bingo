@@ -13,13 +13,15 @@ let activeCardIndex = 0;
 let sessionPool = [];
 let sessionFreeField = true;
 let sessionGridSize = 5;
+let selectedMode = null;
 
 // --- DOM refs ---
 const phase1 = document.getElementById('phase-1');
 const phase2 = document.getElementById('phase-2');
 const phase3 = document.getElementById('phase-3');
 
-const btnStart     = document.getElementById('btn-start');
+const btnModeClassic = document.getElementById('btn-mode-classic');
+const btnModeKids    = document.getElementById('btn-mode-kids');
 const btnBack      = document.getElementById('btn-back');
 const btnGenerate  = document.getElementById('btn-generate');
 const btnNewCard   = document.getElementById('btn-new-card');
@@ -65,6 +67,15 @@ function updateCountDisplay() {
 function rebuildPool() {
   pool = [...activePresets, ...customFields];
   btnGenerate.disabled = !isPoolValid(pool, gridSize);
+}
+
+function setDefaultGridSize(size) {
+  gridSize = size;
+  gridSizeInputs.forEach(input => { input.checked = parseInt(input.value, 10) === size; });
+  const { freeFieldIndex } = getGridConfig(size);
+  const freefieldSection = optFreeField.closest('.customizer-section');
+  freefieldSection.hidden = freeFieldIndex === null;
+  if (freeFieldIndex === null) optFreeField.checked = false;
 }
 
 // --- Preset tags ---
@@ -199,12 +210,46 @@ function renderCards(newCards) {
   showCard(0);
 }
 
-// --- Event listeners ---
-btnStart.addEventListener('click', () => {
+// --- Mode selection ---
+const presetCache = {};
+
+async function loadPresets(filename) {
+  if (!presetCache[filename]) {
+    const res = await fetch(`./${filename}`);
+    if (!res.ok) throw new Error(res.status);
+    const text = await res.text();
+    presetCache[filename] = text.split('\n')
+      .map(l => l.trim())
+      .filter(l => l.length > 0 && !l.startsWith('#'));
+  }
+  ESC_PRESETS = [...presetCache[filename]];
+  pool = [...ESC_PRESETS];
+  activePresets = new Set(ESC_PRESETS);
+  customFields = [];
+  rebuildPool();
+}
+
+async function selectMode(filename, defaultSize) {
+  selectedMode = filename;
+  setDefaultGridSize(defaultSize);
+  await loadPresets(filename);
   renderPresetTags();
   updateCountDisplay();
   rebuildPool();
   showPhase('phase-2');
+}
+
+// --- Event listeners ---
+btnModeClassic.addEventListener('click', () => {
+  btnModeClassic.classList.add('mode-card--active');
+  btnModeKids.classList.remove('mode-card--active');
+  selectMode('presets.txt', 5);
+});
+
+btnModeKids.addEventListener('click', () => {
+  btnModeKids.classList.add('mode-card--active');
+  btnModeClassic.classList.remove('mode-card--active');
+  selectMode('presets-kids.txt', 4);
 });
 
 btnBack.addEventListener('click', () => showPhase('phase-1'));
@@ -303,25 +348,3 @@ customInput.addEventListener('keydown', e => {
   }
 });
 
-// --- Preset loading ---
-btnStart.disabled = true;
-
-async function loadPresets() {
-  try {
-    const res = await fetch('./presets.txt');
-    if (!res.ok) throw new Error(res.status);
-    const text = await res.text();
-    ESC_PRESETS = text.split('\n')
-      .map(l => l.trim())
-      .filter(l => l.length > 0 && !l.startsWith('#'));
-    pool = [...ESC_PRESETS];
-    activePresets = new Set(ESC_PRESETS);
-    rebuildPool();
-  } catch (e) {
-    console.error('Presets konnten nicht geladen werden:', e);
-  } finally {
-    btnStart.disabled = false;
-  }
-}
-
-loadPresets();
