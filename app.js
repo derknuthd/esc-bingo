@@ -23,6 +23,7 @@ const phase3 = document.getElementById('phase-3');
 
 const btnModeClassic = document.getElementById('btn-mode-classic');
 const btnModeKids    = document.getElementById('btn-mode-kids');
+const modeError      = document.getElementById('mode-error');
 const btnBack      = document.getElementById('btn-back');
 const btnGenerate  = document.getElementById('btn-generate');
 const btnNewCard   = document.getElementById('btn-new-card');
@@ -233,17 +234,27 @@ async function loadPresets(filename) {
 }
 
 async function selectMode(filename, defaultSize) {
-  selectedMode = filename;
-  setDefaultGridSize(defaultSize);
-  const isKids = filename === 'presets-kids.txt';
-  kidsOptionsSection.hidden = !isKids;
-  uppercaseEnabled = isKids;
-  optUppercase.checked = isKids;
-  await loadPresets(filename);
-  renderPresetTags();
-  updateCountDisplay();
-  rebuildPool();
-  showPhase('phase-2');
+  modeError.hidden = true;
+  btnModeClassic.disabled = true;
+  btnModeKids.disabled = true;
+  try {
+    selectedMode = filename;
+    setDefaultGridSize(defaultSize);
+    const isKids = filename === 'presets-kids.txt';
+    kidsOptionsSection.hidden = !isKids;
+    uppercaseEnabled = isKids;
+    optUppercase.checked = isKids;
+    await loadPresets(filename);
+    renderPresetTags();
+    updateCountDisplay();
+    rebuildPool();
+    showPhase('phase-2');
+  } catch {
+    modeError.hidden = false;
+  } finally {
+    btnModeClassic.disabled = false;
+    btnModeKids.disabled = false;
+  }
 }
 
 // --- Event listeners ---
