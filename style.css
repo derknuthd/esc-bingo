@@ -704,8 +704,6 @@ body {
     animation: none !important;
     break-before: page;
     page-break-before: always;
-    border: none;
-    border-radius: 0;
     width: 100%;
     height: 250mm;
     box-sizing: border-box;
