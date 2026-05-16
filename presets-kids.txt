@@ -1,26 +1,34 @@
-# ESC Bingo – Kinder-Modus
+# Bühne & Licht
 🔥 Feuer
-😭 Weinen
-🦶 Barfuß
-🪑 Stuhl
-👗👗👗 Umziehen
 💨 Windmaschine
 ✨⬇️ Glitzerregen
 🌫️ Nebel
-🤸 Spagat
-🧒🎤 Kinderchor
-🎤❌ Mikro aus
 🎆 Konfetti
-🥁🥁🥁 Lautes Trommeln
-🤫🎤 Flüstern
-🤡 Peinlicher Witz
-🪗🎻 Heimatinstrument
+🪩 Discokugel
+
+# Körper & Kostüm
+🦶 Barfuß
+👗👗👗 Umziehen
 🎭 Buntes Kostüm
-🙈🎤 Moderator patzt
+🤸 Spagat
+
+# Gesang & Musik
+🎤❌ Mikro aus
+🤫🎤 Flüstern
 🙌🎶 Alle singen mit
+🥁🥁🥁 Lautes Trommeln
+🪗🎻 Heimatinstrument
+🎹 Klavier
+
+# Bühnenaktion
+🪑 Stuhl
+🧒🎤 Kinderchor
+😭 Weinen
+🤖 Roboter / Alien
+
+# ESC-Momente
+🤡 Witz
+🙈🎤 Moderator macht Fehler
 🍰🏙️ Essen & Stadtbilder
 🇦🇹 Österreich-Fahne
-🪩 Discokugel
-🎹 Klavier
-🤖 Roboter / Alien
 ⭐💙 Stern im Gesicht
