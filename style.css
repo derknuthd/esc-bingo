@@ -195,6 +195,7 @@ body {
   transition: color 0.15s;
 }
 .btn--back:hover { color: var(--color-text); }
+.card-actions .btn--back { align-self: center; }
 
 /* ===== Phase 1: Mode Cards ===== */
 .mode-cards {
