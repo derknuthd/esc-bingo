@@ -315,7 +315,6 @@ async function selectMode(filename, defaultSize) {
     await loadPresets(filename);
     renderPresetTags();
     updateCountDisplay();
-    rebuildPool();
     showPhase('phase-2');
   } catch {
     modeError.hidden = false;
@@ -369,7 +368,6 @@ gridSizeInputs.forEach(input => input.addEventListener('change', () => {
   freefieldSection.hidden = freeFieldIndex === null;
   if (freeFieldIndex === null) optFreeField.checked = false;
   rebuildPool();
-  renderPreview();
 }));
 
 optFreeField.addEventListener('change', () => {
