@@ -222,6 +222,10 @@ body {
   padding-block-start: clamp(4px, 1vh, 8px);
 }
 
+.card-preview-wrap:has(#card-nav:not([hidden])) {
+  width: min(100%, max(180px, calc(100svh - 440px)));
+}
+
 .card-preview .bingo-card {
   box-shadow: 0 4px 24px color-mix(in srgb, var(--color-gold) 15%, transparent);
 }
