@@ -219,7 +219,7 @@ body {
 }
 
 .card-preview .bingo-card {
-  max-width: min(100%, calc(100svh - 340px));
+  max-width: min(100%, max(180px, calc(100svh - 340px)));
   margin-inline: auto;
   box-shadow: 0 4px 24px color-mix(in srgb, var(--color-gold) 15%, transparent);
 }
