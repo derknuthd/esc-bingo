@@ -84,7 +84,7 @@ export const ESC_PRESETS = [
 
 1. `presets.txt` – vollständige Liste (≥ 40 Einträge)
 2. `app.js` – Shuffle-Logik + Kartengenerierung (erst Funktion, dann DOM)
-3. `index.html` + `style.css` – Phase-1-UI, dann Phase 2, dann Phase 3
+3. `index.html` + `style.css` – Phase-1-UI, dann Phase 2
 4. `@media print` CSS finalisieren
 5. Polishing: Animationen, Fehlerzustände, Dark Mode, Mobile-Check
 

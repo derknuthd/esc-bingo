@@ -594,7 +594,7 @@ details[open] .preset-group__header::after {
 
 .option-label { font-size: 0.95rem; font-weight: 500; }
 
-/* ===== Phase 3 ===== */
+/* ===== Phase 2 – Kartenvorschau ===== */
 .card-title {
   font-family: var(--font-bubble);
   font-size: clamp(2.8rem, 10vw, 5rem);
