@@ -25,7 +25,8 @@ const phase3 = document.getElementById('phase-3');
 const btnModeClassic = document.getElementById('btn-mode-classic');
 const btnModeKids    = document.getElementById('btn-mode-kids');
 const modeError      = document.getElementById('mode-error');
-const btnBack      = document.getElementById('btn-back');
+const btnBack         = document.getElementById('btn-back');
+const btnBackToConfig = document.getElementById('btn-back-to-config');
 const btnGenerate  = document.getElementById('btn-generate');
 const btnNewCard   = document.getElementById('btn-new-card');
 const btnPrint     = document.getElementById('btn-print');
@@ -348,6 +349,7 @@ btnModeKids.addEventListener('click', () => {
 });
 
 btnBack.addEventListener('click', () => showPhase('phase-1'));
+btnBackToConfig.addEventListener('click', () => showPhase('phase-2'));
 
 btnDecrement.addEventListener('click', () => {
   cardCount = Math.max(1, cardCount - 1);
