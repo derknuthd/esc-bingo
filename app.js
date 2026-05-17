@@ -38,7 +38,9 @@ const optFreeField    = document.getElementById('opt-free-field');
 const optUppercase    = document.getElementById('opt-uppercase');
 const kidsOptionsSection = document.getElementById('kids-options-section');
 const gridSizeInputs  = document.querySelectorAll('.grid-size-radio');
-const cardTitle       = document.getElementById('card-title');
+const cardTitle           = document.getElementById('card-title');
+const btnToggleCustomizer = document.getElementById('btn-toggle-customizer');
+const fieldCustomizer     = document.getElementById('field-customizer');
 
 // --- Phase transitions ---
 function showPhase(id) {
@@ -378,6 +380,12 @@ optFreeField.addEventListener('change', () => {
 optUppercase.addEventListener('change', () => {
   uppercaseEnabled = optUppercase.checked;
   renderPreview();
+});
+
+btnToggleCustomizer?.addEventListener('click', () => {
+  const isOpen = fieldCustomizer.classList.toggle('customizer--open');
+  btnToggleCustomizer.setAttribute('aria-expanded', String(isOpen));
+  if (isOpen) fieldCustomizer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 });
 
 btnSelectAll.addEventListener('click', selectAllPresets);
