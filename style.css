@@ -219,6 +219,8 @@ body {
 }
 
 .card-preview .bingo-card {
+  max-width: min(100%, max(180px, calc(100svh - 340px)));
+  margin-inline: auto;
   box-shadow: 0 4px 24px color-mix(in srgb, var(--color-gold) 15%, transparent);
 }
 
@@ -294,13 +296,47 @@ body {
 .stepper__value::-webkit-inner-spin-button,
 .stepper__value::-webkit-outer-spin-button { appearance: none; }
 
+/* ===== Phase 2: Navigation Bar ===== */
+.phase2-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-block-end: 8px;
+}
+
+.btn--settings-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.4rem;
+  letter-spacing: 0.1em;
+  color: var(--color-text-muted);
+  padding: 8px 12px;
+  border-radius: var(--radius-md);
+  transition: color 0.15s, background-color 0.15s;
+  line-height: 1;
+}
+.btn--settings-toggle:hover,
+.btn--settings-toggle[aria-expanded="true"] {
+  color: var(--color-text);
+  background: var(--color-surface-2);
+}
+
 /* ===== Progressive Disclosure: Customizer ===== */
 .customizer {
+  display: none;
   border-block-start: 1px solid var(--color-border);
   padding-block-end: clamp(20px, 4vw, 40px);
 }
+.customizer--open {
+  display: block;
+  animation: customizerFade 0.2s ease;
+}
+@keyframes customizerFade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
 
-.customizer__toggle,
 .customizer-section__toggle {
   display: flex;
   align-items: center;
@@ -310,38 +346,15 @@ body {
   user-select: none;
   transition: color 0.15s;
 }
-.customizer__toggle::-webkit-details-marker,
 .customizer-section__toggle::-webkit-details-marker { display: none; }
-
-.customizer__toggle {
-  padding-block: 18px;
-  font-family: var(--font-display);
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--color-text-muted);
-}
-.customizer__toggle:hover,
-#field-customizer[open] > summary.customizer__toggle { color: var(--color-text); }
 
 .customizer__arrow {
   display: inline-block;
   transition: transform 0.2s;
   flex-shrink: 0;
 }
-#field-customizer[open] > summary .customizer__arrow,
 .customizer-section[open] > summary .customizer__arrow {
   transform: rotate(90deg);
-}
-
-/* Body fade-in */
-#field-customizer[open] > .customizer__body {
-  opacity: 1;
-  transition: opacity 0.25s;
-}
-@starting-style {
-  #field-customizer[open] > .customizer__body {
-    opacity: 0;
-  }
 }
 
 .customizer__body {
