@@ -23,11 +23,7 @@
   <section id="phase-2" class="phase" aria-hidden="true">
     <div class="phase__inner phase__inner--config">
 
-      <div class="phase2-topbar">
-        <button id="btn-back" type="button" class="btn--back">← Zurück</button>
-        <button id="btn-toggle-customizer" type="button" class="btn--settings-toggle"
-          aria-label="Felder bearbeiten" aria-expanded="false">⋯</button>
-      </div>
+      <button id="btn-back" type="button" class="btn--back">← Zurück</button>
 
       <h2
         id="card-title"
@@ -39,7 +35,11 @@
       >ESC Bingo</h2>
 
       <!-- Live card preview -->
-      <div id="card-preview" class="card-preview"></div>
+      <div class="card-preview-wrap">
+        <div id="card-preview" class="card-preview"></div>
+        <button id="btn-toggle-customizer" type="button" class="btn--configure-link"
+          aria-expanded="false">Bingo konfigurieren</button>
+      </div>
 
       <!-- Felder-Anpassung -->
       <div id="field-customizer" class="customizer">
