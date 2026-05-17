@@ -214,13 +214,20 @@ body {
 }
 
 /* ===== Phase 2: Kartenvorschau ===== */
+.card-preview-wrap {
+  display: flex;
+  flex-direction: column;
+  max-width: min(100%, max(180px, calc(100svh - 340px)));
+  margin-inline: auto;
+  width: 100%;
+  padding-block-start: clamp(8px, 2vh, 16px);
+}
+
 .card-preview {
-  padding-block: clamp(16px, 4vh, 32px);
+  padding-block-end: 0;
 }
 
 .card-preview .bingo-card {
-  max-width: min(100%, max(180px, calc(100svh - 340px)));
-  margin-inline: auto;
   box-shadow: 0 4px 24px color-mix(in srgb, var(--color-gold) 15%, transparent);
 }
 
