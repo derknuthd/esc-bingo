@@ -217,7 +217,7 @@ body {
 .card-preview-wrap {
   display: flex;
   flex-direction: column;
-  max-width: min(100%, max(180px, calc(100svh - 340px)));
+  width: min(100%, max(180px, calc(100svh - 340px)));
   margin-inline: auto;
   padding-block-start: clamp(4px, 1vh, 8px);
 }
