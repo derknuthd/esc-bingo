@@ -1,4 +1,4 @@
-import { FREE_FIELD_LABEL, getGridConfig, generateCard, isPoolValid, navigateCards, parsePresetGroups } from './logic.js';
+import { FREE_FIELD_LABEL, getGridConfig, generateCard, isPoolValid, parsePresetGroups } from './logic.js';
 
 // --- State ---
 let ESC_PRESET_GROUPS = [];
@@ -9,35 +9,24 @@ let customFields = [];
 let cardCount = 1;
 let freeFieldEnabled = true;
 let gridSize = 5;
-let cards = [];
-let activeCardIndex = 0;
-let sessionPool = [];
-let sessionFreeField = true;
-let sessionGridSize = 5;
 let selectedMode = null;
 let uppercaseEnabled = false;
 
 // --- DOM refs ---
 const phase1 = document.getElementById('phase-1');
 const phase2 = document.getElementById('phase-2');
-const phase3 = document.getElementById('phase-3');
 
 const btnModeClassic = document.getElementById('btn-mode-classic');
 const btnModeKids    = document.getElementById('btn-mode-kids');
 const modeError      = document.getElementById('mode-error');
-const btnBack         = document.getElementById('btn-back');
-const btnBackToConfig = document.getElementById('btn-back-to-config');
-const btnGenerate  = document.getElementById('btn-generate');
-const btnNewCard   = document.getElementById('btn-new-card');
-const btnPrint     = document.getElementById('btn-print');
-const btnPrev      = document.getElementById('btn-prev');
-const btnNext      = document.getElementById('btn-next');
-const cardNavCounter = document.getElementById('card-nav-counter');
+const btnBack        = document.getElementById('btn-back');
+const btnGenerate    = document.getElementById('btn-generate');
 
-const btnDecrement    = document.getElementById('btn-decrement');
-const btnIncrement    = document.getElementById('btn-increment');
-const countDisplay    = document.getElementById('card-count-display');
-const cardPreview     = document.getElementById('card-preview');
+const btnDecrement   = document.getElementById('btn-decrement');
+const btnIncrement   = document.getElementById('btn-increment');
+const countDisplay   = document.getElementById('card-count-display');
+const cardPreview    = document.getElementById('card-preview');
+const printContainer = document.getElementById('print-container');
 
 const btnSelectAll    = document.getElementById('btn-select-all');
 const btnDeselectAll  = document.getElementById('btn-deselect-all');
@@ -49,12 +38,11 @@ const optFreeField    = document.getElementById('opt-free-field');
 const optUppercase    = document.getElementById('opt-uppercase');
 const kidsOptionsSection = document.getElementById('kids-options-section');
 const gridSizeInputs  = document.querySelectorAll('.grid-size-radio');
-const cardContainer   = document.getElementById('card-container');
 const cardTitle       = document.getElementById('card-title');
 
 // --- Phase transitions ---
 function showPhase(id) {
-  [phase1, phase2, phase3].forEach(p => {
+  [phase1, phase2].forEach(p => {
     p.classList.remove('phase--active');
     p.setAttribute('aria-hidden', 'true');
   });
@@ -247,22 +235,8 @@ function renderAllCustomChips() {
   customFields.forEach(renderCustomChip);
 }
 
-// --- Card preview (Phase 2) ---
-function renderPreview() {
-  if (!cardPreview) return;
-  if (!isPoolValid(pool, gridSize)) {
-    cardPreview.innerHTML = '<p class="card-preview__empty">Zu wenig Felder ausgewählt für eine Vorschau.</p>';
-    return;
-  }
-  const fields = generateCard(pool, freeFieldEnabled, gridSize);
-  const card = buildCard(fields, gridSize);
-  card.classList.add('bingo-card--active');
-  cardPreview.innerHTML = '';
-  cardPreview.appendChild(card);
-}
-
 // --- Card rendering ---
-function buildCard(fields, size = sessionGridSize) {
+function buildCard(fields, size = gridSize) {
   const card = document.createElement('div');
   card.className = 'bingo-card';
 
@@ -273,7 +247,6 @@ function buildCard(fields, size = sessionGridSize) {
 
   const grid = document.createElement('div');
   grid.className = selectedMode === 'presets-kids.txt' ? 'bingo-grid bingo-grid--kids' : 'bingo-grid';
-
   grid.style.setProperty('--grid-size', size);
 
   fields.forEach(text => {
@@ -288,25 +261,26 @@ function buildCard(fields, size = sessionGridSize) {
   return card;
 }
 
-function showCard(index) {
-  if (index < 0 || index >= cards.length) return;
-  activeCardIndex = index;
-  cardContainer.querySelectorAll('.bingo-card').forEach((el, i) => {
-    el.classList.toggle('bingo-card--active', i === index);
-  });
-  cardNavCounter.textContent = `Karte ${index + 1} von ${cards.length}`;
-  btnPrev.disabled = index === 0;
-  btnNext.disabled = index === cards.length - 1;
+// --- Card preview (Phase 2) ---
+function renderPreview() {
+  if (!cardPreview) return;
+  if (!isPoolValid(pool, gridSize)) {
+    cardPreview.innerHTML = '<p class="card-preview__empty">Zu wenig Felder ausgewählt für eine Vorschau.</p>';
+    return;
+  }
+  const fields = generateCard(pool, freeFieldEnabled, gridSize);
+  const card = buildCard(fields, gridSize);
+  card.classList.add('bingo-card--active');
+  cardPreview.innerHTML = '';
+  cardPreview.appendChild(card);
 }
 
-function renderCards(newCards) {
-  cards = newCards;
-  sessionPool = [...pool];
-  sessionFreeField = freeFieldEnabled;
-  sessionGridSize = gridSize;
-  cardContainer.innerHTML = '';
-  cards.forEach(fields => cardContainer.appendChild(buildCard(fields)));
-  showCard(0);
+// --- Print ---
+function renderPrintCards() {
+  printContainer.innerHTML = '';
+  Array.from({ length: cardCount }, () =>
+    generateCard(pool, freeFieldEnabled, gridSize)
+  ).forEach(fields => printContainer.appendChild(buildCard(fields, gridSize)));
 }
 
 // --- Mode selection ---
@@ -365,7 +339,6 @@ btnModeKids.addEventListener('click', () => {
 });
 
 btnBack.addEventListener('click', () => showPhase('phase-1'));
-btnBackToConfig.addEventListener('click', () => showPhase('phase-2'));
 
 btnDecrement.addEventListener('click', () => {
   cardCount = Math.max(1, cardCount - 1);
@@ -385,14 +358,8 @@ countDisplay.addEventListener('change', () => {
 
 btnGenerate.addEventListener('click', () => {
   freeFieldEnabled = optFreeField.checked;
-  renderCards(Array.from({ length: cardCount }, () => generateCard(pool, freeFieldEnabled, gridSize)));
-  showPhase('phase-3');
-});
-
-btnNewCard.addEventListener('click', () => {
-  cards.push(generateCard(sessionPool, sessionFreeField, sessionGridSize));
-  cardContainer.appendChild(buildCard(cards[cards.length - 1]));
-  showCard(cards.length - 1);
+  renderPrintCards();
+  window.print();
 });
 
 gridSizeInputs.forEach(input => input.addEventListener('change', () => {
@@ -405,10 +372,30 @@ gridSizeInputs.forEach(input => input.addEventListener('change', () => {
   renderPreview();
 }));
 
-btnPrev.addEventListener('click', () => showCard(activeCardIndex - 1));
-btnNext.addEventListener('click', () => showCard(activeCardIndex + 1));
+optFreeField.addEventListener('change', () => {
+  freeFieldEnabled = optFreeField.checked;
+  renderPreview();
+});
 
-btnPrint.addEventListener('click', () => window.print());
+optUppercase.addEventListener('change', () => {
+  uppercaseEnabled = optUppercase.checked;
+  renderPreview();
+});
+
+btnSelectAll.addEventListener('click', selectAllPresets);
+btnDeselectAll.addEventListener('click', deselectAllPresets);
+
+btnAddCustom.addEventListener('click', () => {
+  if (addCustomField(customInput.value)) customInput.value = '';
+  customInput.focus();
+});
+
+customInput.addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    if (addCustomField(customInput.value)) customInput.value = '';
+  }
+});
 
 // --- Card title (contenteditable) ---
 let titleSnapshot = '';
@@ -444,37 +431,3 @@ cardTitle.addEventListener('paste', e => {
   sel.getRangeAt(0).insertNode(document.createTextNode(text));
   sel.collapseToEnd();
 });
-
-// Swipe support
-let touchStartX = 0;
-cardContainer.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
-cardContainer.addEventListener('touchend', e => {
-  const delta = e.changedTouches[0].clientX - touchStartX;
-  if (Math.abs(delta) > 50) showCard(navigateCards(activeCardIndex, delta < 0 ? 1 : -1, cards.length));
-}, { passive: true });
-
-optFreeField.addEventListener('change', () => {
-  freeFieldEnabled = optFreeField.checked;
-  renderPreview();
-});
-
-optUppercase.addEventListener('change', () => {
-  uppercaseEnabled = optUppercase.checked;
-  renderPreview();
-});
-
-btnSelectAll.addEventListener('click', selectAllPresets);
-btnDeselectAll.addEventListener('click', deselectAllPresets);
-
-btnAddCustom.addEventListener('click', () => {
-  if (addCustomField(customInput.value)) customInput.value = '';
-  customInput.focus();
-});
-
-customInput.addEventListener('keydown', e => {
-  if (e.key === 'Enter') {
-    e.preventDefault();
-    if (addCustomField(customInput.value)) customInput.value = '';
-  }
-});
-
