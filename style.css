@@ -121,11 +121,6 @@ body {
   line-height: 1.1;
 }
 
-.subline {
-  max-inline-size: 460px;
-  color: var(--color-text-muted);
-  font-size: 1.05rem;
-}
 
 /* ===== Buttons ===== */
 .btn {
