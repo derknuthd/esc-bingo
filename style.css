@@ -647,12 +647,14 @@ details[open] .preset-group__header::after {
 }
 
 /* ===== Card Navigation ===== */
+.card-nav[hidden] { display: none; }
+
 .card-nav {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 16px;
-  margin-block-end: 16px;
+  margin-block-start: 12px;
 }
 
 .card-nav__btn {
