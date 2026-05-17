@@ -106,6 +106,7 @@ body {
   flex-direction: column;
   min-block-size: 100svh;
   gap: 0;
+  padding-block-end: 90px;
 }
 
 /* ===== Phase 1 ===== */
@@ -242,6 +243,7 @@ body {
   padding-inline: clamp(16px, 4vw, 32px);
   background: var(--color-bg);
   border-block-start: 1px solid var(--color-border);
+  box-shadow: 0 -8px 24px color-mix(in srgb, var(--color-bg) 60%, transparent);
   z-index: 10;
 }
 
@@ -779,6 +781,8 @@ details[open] .preset-group__header::after {
 }
 
 /* ===== Print ===== */
+#print-container { display: none; }
+
 @page { size: A4 portrait; margin: 10mm; }
 
 @media print {
@@ -795,25 +799,13 @@ details[open] .preset-group__header::after {
     --color-free-bg: #f5e080;
   }
 
-  body { background: var(--color-bg); color: var(--color-text); }
+  body > *:not(#print-container) { display: none !important; }
 
-  .phase { display: none !important; }
-
-  #phase-3 {
-    display: block !important;
-    opacity: 1 !important;
-    transform: none !important;
-  }
-
-  #phase-3 .phase__inner,
-  #card-container {
-    max-inline-size: none;
+  #print-container {
+    display: block;
     padding: 0;
     margin: 0;
   }
-
-  .card-nav { display: none !important; }
-  .card-actions { display: none !important; }
 
   .bingo-card {
     display: flex !important;
@@ -865,8 +857,6 @@ details[open] .preset-group__header::after {
     color: var(--color-text);
     border-block-end: 1px solid var(--color-border);
   }
-
-  #card-title { display: none; }
 
   .bingo-card__title {
     display: block;
