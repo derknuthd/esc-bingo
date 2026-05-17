@@ -219,12 +219,7 @@ body {
   flex-direction: column;
   max-width: min(100%, max(180px, calc(100svh - 340px)));
   margin-inline: auto;
-  width: 100%;
   padding-block-start: clamp(4px, 1vh, 8px);
-}
-
-.card-preview {
-  padding-block-end: 0;
 }
 
 .card-preview .bingo-card {
