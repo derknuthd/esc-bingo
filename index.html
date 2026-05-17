@@ -19,11 +19,20 @@
     </div>
   </section>
 
-  <!-- Phase 2: Konfigurieren -->
+  <!-- Phase 2: Konfigurieren + Drucken -->
   <section id="phase-2" class="phase" aria-hidden="true">
     <div class="phase__inner phase__inner--config">
 
       <button id="btn-back" type="button" class="btn--back">← Zurück</button>
+
+      <h2
+        id="card-title"
+        class="card-title"
+        contenteditable="true"
+        spellcheck="false"
+        title="Klicken zum Bearbeiten"
+        aria-label="Kartentitel, klicken zum Bearbeiten"
+      >ESC Bingo</h2>
 
       <!-- Live card preview -->
       <div id="card-preview" class="card-preview"></div>
@@ -129,7 +138,7 @@
         </div>
       </details>
 
-      <!-- Sticky footer: Anzahl + Generieren -->
+      <!-- Sticky footer: Anzahl + Drucken -->
       <div class="phase2-footer">
         <div class="stepper" role="group" aria-label="Anzahl Karten">
           <button id="btn-decrement" type="button" class="stepper__btn" aria-label="Weniger">−</button>
@@ -144,36 +153,14 @@
           />
           <button id="btn-increment" type="button" class="stepper__btn" aria-label="Mehr">+</button>
         </div>
-        <button id="btn-generate" class="btn btn--primary">Karten generieren</button>
+        <button id="btn-generate" class="btn btn--primary">Drucken</button>
       </div>
 
     </div>
   </section>
 
-  <!-- Phase 3: Karte anzeigen -->
-  <section id="phase-3" class="phase" aria-hidden="true">
-    <div class="phase__inner">
-      <h2
-        id="card-title"
-        class="card-title"
-        contenteditable="true"
-        spellcheck="false"
-        title="Klicken zum Bearbeiten"
-        aria-label="Kartentitel, klicken zum Bearbeiten"
-      >ESC Bingo</h2>
-      <nav class="card-nav" id="card-nav" aria-label="Karten-Navigation">
-        <button id="btn-prev" class="card-nav__btn" aria-label="Vorherige Karte">←</button>
-        <span id="card-nav-counter" class="card-nav__counter" aria-live="polite">Karte 1 von 1</span>
-        <button id="btn-next" class="card-nav__btn" aria-label="Nächste Karte">→</button>
-      </nav>
-      <div id="card-container"></div>
-      <div class="card-actions">
-        <button id="btn-print" class="btn btn--primary">Drucken / Als PDF speichern</button>
-        <button id="btn-new-card" class="btn btn--secondary">Weitere Karte +</button>
-        <button id="btn-back-to-config" type="button" class="btn--back">← Felder bearbeiten</button>
-      </div>
-    </div>
-  </section>
+  <!-- Druckcontainer (screen: unsichtbar, print: sichtbar) -->
+  <div id="print-container"></div>
 
   <script type="module" src="app.js"></script>
 </body>
