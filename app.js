@@ -37,6 +37,7 @@ const cardNavCounter = document.getElementById('card-nav-counter');
 const btnDecrement    = document.getElementById('btn-decrement');
 const btnIncrement    = document.getElementById('btn-increment');
 const countDisplay    = document.getElementById('card-count-display');
+const cardPreview     = document.getElementById('card-preview');
 
 const btnSelectAll    = document.getElementById('btn-select-all');
 const btnDeselectAll  = document.getElementById('btn-deselect-all');
@@ -64,7 +65,7 @@ function showPhase(id) {
 
 // --- Stepper ---
 function updateCountDisplay() {
-  countDisplay.textContent = cardCount;
+  countDisplay.value = cardCount;
   btnDecrement.disabled = cardCount <= 1;
   btnIncrement.disabled = cardCount >= 20;
 }
@@ -73,6 +74,7 @@ function updateCountDisplay() {
 function rebuildPool() {
   pool = [...activePresets, ...customFields];
   btnGenerate.disabled = !isPoolValid(pool, gridSize);
+  renderPreview();
 }
 
 function setDefaultGridSize(size) {
@@ -245,8 +247,22 @@ function renderAllCustomChips() {
   customFields.forEach(renderCustomChip);
 }
 
+// --- Card preview (Phase 2) ---
+function renderPreview() {
+  if (!cardPreview) return;
+  if (!isPoolValid(pool, gridSize)) {
+    cardPreview.innerHTML = '<p class="card-preview__empty">Zu wenig Felder ausgewählt für eine Vorschau.</p>';
+    return;
+  }
+  const fields = generateCard(pool, freeFieldEnabled, gridSize);
+  const card = buildCard(fields, gridSize);
+  card.classList.add('bingo-card--active');
+  cardPreview.innerHTML = '';
+  cardPreview.appendChild(card);
+}
+
 // --- Card rendering ---
-function buildCard(fields) {
+function buildCard(fields, size = sessionGridSize) {
   const card = document.createElement('div');
   card.className = 'bingo-card';
 
@@ -258,7 +274,7 @@ function buildCard(fields) {
   const grid = document.createElement('div');
   grid.className = selectedMode === 'presets-kids.txt' ? 'bingo-grid bingo-grid--kids' : 'bingo-grid';
 
-  grid.style.setProperty('--grid-size', sessionGridSize);
+  grid.style.setProperty('--grid-size', size);
 
   fields.forEach(text => {
     const cell = document.createElement('div');
@@ -361,6 +377,12 @@ btnIncrement.addEventListener('click', () => {
   updateCountDisplay();
 });
 
+countDisplay.addEventListener('change', () => {
+  const val = parseInt(countDisplay.value, 10);
+  cardCount = Math.max(1, Math.min(20, isNaN(val) ? 1 : val));
+  updateCountDisplay();
+});
+
 btnGenerate.addEventListener('click', () => {
   freeFieldEnabled = optFreeField.checked;
   renderCards(Array.from({ length: cardCount }, () => generateCard(pool, freeFieldEnabled, gridSize)));
@@ -380,6 +402,7 @@ gridSizeInputs.forEach(input => input.addEventListener('change', () => {
   freefieldSection.hidden = freeFieldIndex === null;
   if (freeFieldIndex === null) optFreeField.checked = false;
   rebuildPool();
+  renderPreview();
 }));
 
 btnPrev.addEventListener('click', () => showCard(activeCardIndex - 1));
@@ -430,7 +453,15 @@ cardContainer.addEventListener('touchend', e => {
   if (Math.abs(delta) > 50) showCard(navigateCards(activeCardIndex, delta < 0 ? 1 : -1, cards.length));
 }, { passive: true });
 
-optUppercase.addEventListener('change', () => { uppercaseEnabled = optUppercase.checked; });
+optFreeField.addEventListener('change', () => {
+  freeFieldEnabled = optFreeField.checked;
+  renderPreview();
+});
+
+optUppercase.addEventListener('change', () => {
+  uppercaseEnabled = optUppercase.checked;
+  renderPreview();
+});
 
 btnSelectAll.addEventListener('click', selectAllPresets);
 btnDeselectAll.addEventListener('click', deselectAllPresets);
