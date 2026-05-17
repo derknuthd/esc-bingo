@@ -339,7 +339,11 @@ btnModeKids.addEventListener('click', () => {
   selectMode('presets-kids.txt', 4);
 });
 
-btnBack.addEventListener('click', () => showPhase('phase-1'));
+btnBack.addEventListener('click', () => {
+  showPhase('phase-1');
+  fieldCustomizer.classList.remove('customizer--open');
+  btnToggleCustomizer.setAttribute('aria-expanded', 'false');
+});
 
 btnDecrement.addEventListener('click', () => {
   cardCount = Math.max(1, cardCount - 1);
