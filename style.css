@@ -296,30 +296,24 @@ body {
 .stepper__value::-webkit-inner-spin-button,
 .stepper__value::-webkit-outer-spin-button { appearance: none; }
 
-/* ===== Phase 2: Navigation Bar ===== */
-.phase2-topbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-block-end: 8px;
-}
-
-.btn--settings-toggle {
+/* ===== Phase 2: Konfigurieren-Link ===== */
+.btn--configure-link {
+  align-self: flex-end;
+  margin-block: 4px 8px;
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 1.4rem;
-  letter-spacing: 0.1em;
   color: var(--color-text-muted);
-  padding: 8px 12px;
-  border-radius: var(--radius-md);
-  transition: color 0.15s, background-color 0.15s;
-  line-height: 1;
+  font-size: 0.85rem;
+  padding: 4px 2px;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 3px;
+  transition: color 0.15s;
 }
-.btn--settings-toggle:hover,
-.btn--settings-toggle[aria-expanded="true"] {
+.btn--configure-link:hover,
+.btn--configure-link[aria-expanded="true"] {
   color: var(--color-text);
-  background: var(--color-surface-2);
 }
 
 /* ===== Progressive Disclosure: Customizer ===== */
