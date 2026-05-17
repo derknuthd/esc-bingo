@@ -696,12 +696,14 @@ details[open] .preset-group__header::after {
 
 .bingo-card--active {
   display: block;
-  animation: cardFade 0.2s ease;
+  transform: translateX(0);
+  opacity: 1;
+  transition: transform 0.2s ease, opacity 0.15s ease;
 }
 
-@keyframes cardFade {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+@starting-style {
+  .bingo-card--active[data-slide="right"] { transform: translateX(32px); opacity: 0; }
+  .bingo-card--active[data-slide="left"]  { transform: translateX(-32px); opacity: 0; }
 }
 
 .bingo-card__name {
