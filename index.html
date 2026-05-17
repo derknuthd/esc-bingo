@@ -23,7 +23,11 @@
   <section id="phase-2" class="phase" aria-hidden="true">
     <div class="phase__inner phase__inner--config">
 
-      <button id="btn-back" type="button" class="btn--back">← Zurück</button>
+      <div class="phase2-topbar">
+        <button id="btn-back" type="button" class="btn--back">← Zurück</button>
+        <button id="btn-toggle-customizer" type="button" class="btn--settings-toggle"
+          aria-label="Felder bearbeiten" aria-expanded="false">⋯</button>
+      </div>
 
       <h2
         id="card-title"
@@ -37,12 +41,8 @@
       <!-- Live card preview -->
       <div id="card-preview" class="card-preview"></div>
 
-      <!-- Progressive disclosure: Felder anpassen -->
-      <details id="field-customizer" class="customizer">
-        <summary class="customizer__toggle">
-          <span>Felder anpassen</span>
-          <span class="customizer__arrow" aria-hidden="true">›</span>
-        </summary>
+      <!-- Felder-Anpassung -->
+      <div id="field-customizer" class="customizer">
 
         <div class="customizer__body">
 
@@ -70,10 +70,10 @@
             </div>
           </details>
 
-          <!-- Ebene 1: Bestehende Klischees -->
+          <!-- Ebene 1: Bingo-Vorlagen -->
           <details class="customizer-section">
             <summary class="customizer-section__toggle">
-              <span>Bestehende Klischees</span>
+              <span>Bingo-Vorlagen</span>
               <span class="customizer__arrow" aria-hidden="true">›</span>
             </summary>
             <div class="customizer-section__body">
@@ -81,7 +81,7 @@
                 <button id="btn-select-all" type="button" class="btn btn--ghost btn--sm">Alle</button>
                 <button id="btn-deselect-all" type="button" class="btn btn--ghost btn--sm">Keine</button>
               </div>
-              <div id="preset-tags" aria-label="ESC-Klischees"></div>
+              <div id="preset-tags" aria-label="Bingo-Vorlagen"></div>
             </div>
           </details>
 
@@ -136,7 +136,7 @@
           </details>
 
         </div>
-      </details>
+      </div>
 
       <!-- Sticky footer: Anzahl + Drucken -->
       <div class="phase2-footer">
