@@ -25,16 +25,8 @@
 
       <button id="btn-back" type="button" class="btn--back">← Zurück</button>
 
-      <!-- Minimal hero: immer sichtbar -->
-      <div class="count-hero">
-        <p class="count-label">Wie viele Karten?</p>
-        <div class="stepper" role="group" aria-label="Anzahl Karten">
-          <button id="btn-decrement" type="button" class="stepper__btn" aria-label="Weniger">−</button>
-          <span id="card-count-display" class="stepper__value" aria-live="polite">1</span>
-          <button id="btn-increment" type="button" class="stepper__btn" aria-label="Mehr">+</button>
-        </div>
-        <button id="btn-generate" class="btn btn--primary btn--large">Karten generieren</button>
-      </div>
+      <!-- Live card preview -->
+      <div id="card-preview" class="card-preview"></div>
 
       <!-- Progressive disclosure: Felder anpassen -->
       <details id="field-customizer" class="customizer">
@@ -136,6 +128,24 @@
 
         </div>
       </details>
+
+      <!-- Sticky footer: Anzahl + Generieren -->
+      <div class="phase2-footer">
+        <div class="stepper" role="group" aria-label="Anzahl Karten">
+          <button id="btn-decrement" type="button" class="stepper__btn" aria-label="Weniger">−</button>
+          <input
+            id="card-count-display"
+            type="number"
+            class="stepper__value"
+            value="1"
+            min="1"
+            max="20"
+            aria-label="Anzahl Karten"
+          />
+          <button id="btn-increment" type="button" class="stepper__btn" aria-label="Mehr">+</button>
+        </div>
+        <button id="btn-generate" class="btn btn--primary">Karten generieren</button>
+      </div>
 
     </div>
   </section>
