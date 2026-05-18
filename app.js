@@ -29,10 +29,9 @@ const btnIncrement   = document.getElementById('btn-increment');
 const countDisplay   = document.getElementById('card-count-display');
 const cardPreview    = document.getElementById('card-preview');
 const printContainer = document.getElementById('print-container');
-const cardNav        = document.getElementById('card-nav');
-const cardNavCounter = document.getElementById('card-nav-counter');
-const btnPrev        = document.getElementById('btn-prev');
-const btnNext        = document.getElementById('btn-next');
+const cardNav  = document.getElementById('card-nav');
+const btnPrev  = document.getElementById('btn-prev');
+const btnNext  = document.getElementById('btn-next');
 
 const btnSelectAll    = document.getElementById('btn-select-all');
 const btnDeselectAll  = document.getElementById('btn-deselect-all');
@@ -272,7 +271,12 @@ function buildCard(fields, size = gridSize) {
 // --- Card preview (Phase 2) ---
 function generateCards() {
   if (!isPoolValid(pool, gridSize)) {
-    cardPreview.innerHTML = '<p class="card-preview__empty">Zu wenig Felder ausgewählt für eine Vorschau.</p>';
+    cardPreview.querySelector('.bingo-card')?.remove();
+    cardPreview.querySelector('.card-preview__empty')?.remove();
+    const msg = document.createElement('p');
+    msg.className = 'card-preview__empty';
+    msg.textContent = 'Zu wenig Felder ausgewählt für eine Vorschau.';
+    cardPreview.appendChild(msg);
     cardNav.hidden = true;
     cards = [];
     return;
@@ -288,13 +292,13 @@ function showCard(index, direction = 'right') {
   const card = buildCard(cards[index], gridSize);
   card.classList.add('bingo-card--active');
   card.dataset.slide = direction;
-  cardPreview.innerHTML = '';
+  cardPreview.querySelector('.bingo-card')?.remove();
+  cardPreview.querySelector('.card-preview__empty')?.remove();
   cardPreview.appendChild(card);
 
   const multi = cards.length > 1;
   cardNav.hidden = !multi;
   if (multi) {
-    cardNavCounter.textContent = `Karte ${index + 1} von ${cards.length}`;
     btnPrev.disabled = index === 0;
     btnNext.disabled = index === cards.length - 1;
   }
