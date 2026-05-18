@@ -405,8 +405,8 @@ document.addEventListener('keydown', e => {
 });
 
 let touchStartX = 0;
-cardPreviewWrap.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
-cardPreviewWrap.addEventListener('touchend', e => {
+cardPreview.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
+cardPreview.addEventListener('touchend', e => {
   const dx = e.changedTouches[0].clientX - touchStartX;
   if (Math.abs(dx) < 40) return;
   if (dx < 0 && currentCard < cards.length - 1) showCard(++currentCard, 'right');
