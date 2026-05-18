@@ -36,7 +36,12 @@
 
       <!-- Live card preview -->
       <div class="card-preview-wrap">
-        <div id="card-preview" class="card-preview"></div>
+        <div id="card-preview" class="card-preview">
+          <div class="card-nav" id="card-nav" hidden>
+            <button id="btn-prev" class="card-nav__btn" aria-label="Vorherige Karte">‹</button>
+            <button id="btn-next" class="card-nav__btn" aria-label="Nächste Karte">›</button>
+          </div>
+        </div>
         <button id="btn-toggle-customizer" type="button" class="btn--configure-link"
           aria-expanded="false">Bingo konfigurieren</button>
       </div>
