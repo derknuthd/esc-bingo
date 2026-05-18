@@ -655,20 +655,19 @@ details[open] .preset-group__header::after {
 
 .card-nav {
   position: absolute;
-  inset: 0;
+  inset-block: 0;
+  inset-inline: -60px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-inline: 8px;
   pointer-events: none;
   z-index: 1;
 }
 
 .card-nav__btn {
   pointer-events: all;
-  background: color-mix(in srgb, var(--color-bg) 72%, transparent);
-  backdrop-filter: blur(6px);
-  border: 1px solid color-mix(in srgb, var(--color-border) 60%, transparent);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   color: var(--color-text);
   cursor: pointer;
@@ -678,7 +677,7 @@ details[open] .preset-group__header::after {
 }
 
 .card-nav__btn:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--color-surface-2) 90%, transparent);
+  background: var(--color-surface-2);
   border-color: var(--color-gold);
 }
 
