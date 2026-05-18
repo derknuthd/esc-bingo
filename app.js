@@ -119,10 +119,16 @@ function renderPresetTags(openStates = {}) {
     btnNone.className = 'btn btn--ghost btn--sm';
     btnNone.textContent = 'Keine';
 
+    const chevron = document.createElement('span');
+    chevron.className = 'preset-group__chevron';
+    chevron.setAttribute('aria-hidden', 'true');
+    chevron.textContent = '›';
+
     summary.appendChild(indicator);
     summary.appendChild(title);
     summary.appendChild(btnAll);
     summary.appendChild(btnNone);
+    summary.appendChild(chevron);
     details.appendChild(summary);
 
     function updateIndicator() {
@@ -209,38 +215,40 @@ function addCustomField(text) {
   if (!value || pool.includes(value)) return false;
   customFields.push(value);
   rebuildPool();
-  renderCustomChip(value);
+  renderCustomFieldRow(value);
   return true;
 }
 
 function removeCustomField(value) {
   customFields = customFields.filter(v => v !== value);
   rebuildPool();
-  renderAllCustomChips();
+  renderAllCustomFieldRows();
 }
 
-function renderCustomChip(value) {
-  const chip = document.createElement('span');
-  chip.className = 'chip';
+function renderCustomFieldRow(value) {
+  const row = document.createElement('div');
+  row.className = 'custom-field-item';
+  row.setAttribute('role', 'listitem');
 
-  const label = document.createElement('span');
-  label.textContent = value;
+  const text = document.createElement('span');
+  text.className = 'custom-field-item__text';
+  text.textContent = value;
 
   const remove = document.createElement('button');
   remove.type = 'button';
-  remove.className = 'chip__remove';
+  remove.className = 'custom-field-item__remove';
   remove.setAttribute('aria-label', `${value} entfernen`);
   remove.textContent = '×';
   remove.addEventListener('click', () => removeCustomField(value));
 
-  chip.appendChild(label);
-  chip.appendChild(remove);
-  customChips.appendChild(chip);
+  row.appendChild(text);
+  row.appendChild(remove);
+  customChips.appendChild(row);
 }
 
-function renderAllCustomChips() {
+function renderAllCustomFieldRows() {
   customChips.innerHTML = '';
-  customFields.forEach(renderCustomChip);
+  customFields.forEach(renderCustomFieldRow);
 }
 
 // --- Card rendering ---
