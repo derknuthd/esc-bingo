@@ -686,6 +686,22 @@ details[open] .preset-group__header::after {
   cursor: default;
 }
 
+@media (max-width: 500px) {
+  .card-nav {
+    inset-inline: 0;
+  }
+  .card-nav__btn {
+    background: color-mix(in srgb, var(--color-surface) 85%, transparent);
+    border-color: transparent;
+    padding: 8px 10px;
+  }
+  @supports (backdrop-filter: blur(1px)) {
+    .card-nav__btn {
+      backdrop-filter: blur(4px);
+    }
+  }
+}
+
 /* ===== Bingo Card ===== */
 .bingo-card {
   display: none;
