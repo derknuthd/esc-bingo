@@ -27,7 +27,8 @@ const btnGenerate    = document.getElementById('btn-generate');
 const btnDecrement   = document.getElementById('btn-decrement');
 const btnIncrement   = document.getElementById('btn-increment');
 const countDisplay   = document.getElementById('card-count-display');
-const cardPreview    = document.getElementById('card-preview');
+const cardPreview     = document.getElementById('card-preview');
+const cardPreviewWrap = document.getElementById('card-preview-wrap');
 const printContainer = document.getElementById('print-container');
 const cardNav  = document.getElementById('card-nav');
 const btnPrev  = document.getElementById('btn-prev');
@@ -404,8 +405,8 @@ document.addEventListener('keydown', e => {
 });
 
 let touchStartX = 0;
-cardPreview.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
-cardPreview.addEventListener('touchend', e => {
+cardPreviewWrap.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
+cardPreviewWrap.addEventListener('touchend', e => {
   const dx = e.changedTouches[0].clientX - touchStartX;
   if (Math.abs(dx) < 40) return;
   if (dx < 0 && currentCard < cards.length - 1) showCard(++currentCard, 'right');
