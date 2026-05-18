@@ -424,7 +424,6 @@ details.preset-group summary::-webkit-details-marker { display: none; }
   font-size: 0.8rem;
   color: var(--color-text-muted);
   transition: transform 0.2s;
-  margin-inline-start: auto;
 }
 details[open] > summary .preset-group__chevron {
   transform: rotate(90deg);
