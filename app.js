@@ -398,7 +398,7 @@ btnNext.addEventListener('click', () => {
 });
 
 document.addEventListener('keydown', e => {
-  if (document.activeElement?.tagName === 'INPUT') return;
+  if (document.activeElement?.isContentEditable || document.activeElement?.tagName === 'INPUT') return;
   if (e.key === 'ArrowLeft' && currentCard > 0) showCard(--currentCard, 'left');
   if (e.key === 'ArrowRight' && currentCard < cards.length - 1) showCard(++currentCard, 'right');
 });
