@@ -692,9 +692,13 @@ details[open] .preset-group__header::after {
   }
   .card-nav__btn {
     background: color-mix(in srgb, var(--color-surface) 85%, transparent);
-    backdrop-filter: blur(4px);
     border-color: transparent;
     padding: 8px 10px;
+  }
+  @supports (backdrop-filter: blur(1px)) {
+    .card-nav__btn {
+      backdrop-filter: blur(4px);
+    }
   }
 }
 
