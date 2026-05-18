@@ -403,6 +403,15 @@ document.addEventListener('keydown', e => {
   if (e.key === 'ArrowRight' && currentCard < cards.length - 1) showCard(++currentCard, 'right');
 });
 
+let touchStartX = 0;
+cardPreview.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
+cardPreview.addEventListener('touchend', e => {
+  const dx = e.changedTouches[0].clientX - touchStartX;
+  if (Math.abs(dx) < 40) return;
+  if (dx < 0 && currentCard < cards.length - 1) showCard(++currentCard, 'right');
+  if (dx > 0 && currentCard > 0) showCard(--currentCard, 'left');
+}, { passive: true });
+
 btnGenerate.addEventListener('click', () => {
   freeFieldEnabled = optFreeField.checked;
   renderPrintCards();
